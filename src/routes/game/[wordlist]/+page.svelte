@@ -4,13 +4,14 @@
 	import { getWordLists } from '$lib/WordListManager';
 	import { WordList } from '$lib/WordList';
 	import { GameSession } from '$lib/GameSession';
+	import type { WordPair } from '$lib/WordPair';
 
 	let session: GameSession | undefined;
   
 	const wordList = page.params.wordlist;
 	let selectedList: WordList | undefined;
 
-	let currentWord: string | undefined;
+	let currentWord: WordPair | undefined;
   	let options: string[] = [];
   	let isCorrect: boolean | undefined = undefined;
   	let hasAnswered = false;
@@ -19,6 +20,7 @@
 		incorrect: 0
 	};
 	let totalWords = 0;
+	let theAnswer = '';
   
 	onMount(() => {
 	  const lists = getWordLists();
@@ -38,7 +40,7 @@
     	if (session) {
       		const nextWord = session.getNextWord();
       		if (nextWord) {
-        		currentWord = nextWord.word;
+        		currentWord = nextWord;
         		options = session.getMultipleChoiceOptions();
         		hasAnswered = false;
         		isCorrect = undefined;
@@ -51,6 +53,7 @@
   	function checkAnswer(answer: string) {
     	if (!session || !currentWord) return;
 
+		theAnswer = answer;
     	isCorrect = session.answerCurrentWord(answer);
     	hasAnswered = true;
 		score = session.getScore();
@@ -65,12 +68,12 @@
 	  <p>Voortgang: {score.correct + score.incorrect + 1} / {totalWords}</p>
 	  
 	  {#if currentWord}
-      <h2>Woord: {currentWord}</h2>
+      <h2>Woord: {currentWord.word}</h2>
       <div class="options">
         {#each options as option}
           <button
-            class:correct={hasAnswered && isCorrect && option === currentWord}
-            class:incorrect={hasAnswered && !isCorrect && option !== currentWord}
+            class:correct={hasAnswered && option === currentWord.translation}
+            class:incorrect={hasAnswered && !isCorrect && option === theAnswer}
             on:click={() => checkAnswer(option)}
             disabled={hasAnswered}
           >
@@ -80,6 +83,11 @@
       </div>
 
       {#if hasAnswered}
+	  	{#if isCorrect}
+		  	<p>Goed gedaan!</p>
+		{:else}
+			<p>Helaas...</p>
+		{/if}
         <button on:click={loadNextWord}>Next Word</button>
       {/if}
     {:else}
@@ -122,11 +130,13 @@
 	button.correct {
 	  border-color: green;
 	  background-color: #28a745;
+	  border-width: 5px;
 	}
   
 	button.incorrect {
 	  border-color: red;
 	  background-color: #dc3545;
+	  border-width: 5px;
 	}
   
 	button:disabled {
