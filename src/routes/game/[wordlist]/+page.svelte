@@ -65,7 +65,7 @@
 	  <h1>{selectedList.name}</h1>
 	  <p>Goed: {score.correct}</p>
 	  <p>Fout: {score.incorrect}</p>
-	  <p>Voortgang: {score.correct + score.incorrect + 1} / {totalWords}</p>
+	  <p>Voortgang: {score.correct + score.incorrect} / {totalWords}</p>
 	  
 	  {#if currentWord}
       <h2>Woord: {currentWord.word}</h2>
