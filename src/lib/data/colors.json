@@ -1,0 +1,9 @@
+{
+	"name": "Colors",
+	"words": [
+	  { "word": "red", "translation": "rood" },
+	  { "word": "blue", "translation": "blauw" },
+	  { "word": "green", "translation": "groen" }
+	]
+  }
+  

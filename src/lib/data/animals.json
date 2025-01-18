@@ -1,0 +1,9 @@
+{
+	"name": "Animals",
+	"words": [
+	  { "word": "dog", "translation": "hond" },
+	  { "word": "cat", "translation": "kat" },
+	  { "word": "bird", "translation": "vogel" }
+	]
+  }
+  
