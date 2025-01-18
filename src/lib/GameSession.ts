@@ -19,6 +19,8 @@ export class GameSession {
 	private incorrect: number = 0;
 	private total: number;
 
+	private i = 0;
+
 	constructor(private readonly wordList: WordList) {
 		this.words = shuffle(wordList.getWordPairs());		
 		this.total = this.words.length;
@@ -29,7 +31,11 @@ export class GameSession {
 	}
 
 	public getNextWord() {
-		this.currentWord = this.words.shift() ?? null;
+		if (this.i >= this.words.length) {
+			return null;
+		}
+		this.currentWord = this.words[this.i];
+		this.i++;
 		return this.currentWord;
 	}
 

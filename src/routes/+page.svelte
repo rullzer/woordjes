@@ -1,10 +1,11 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { getWordLists } from "$lib/WordListManager";
 
 	const lists = getWordLists();
 
 	const selectList = (listName: string) => {
-    	alert(`You selected: ${listName}`);
+		goto(`/game/${listName}`);
   	};
 </script>
 
