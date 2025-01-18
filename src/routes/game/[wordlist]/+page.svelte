@@ -88,7 +88,7 @@
 		{:else}
 			<p>Helaas...</p>
 		{/if}
-        <button on:click={loadNextWord}>Next Word</button>
+        <button on:click={loadNextWord}>Volgende woord</button>
       {/if}
     {:else}
       <h2>Game Over!</h2>
