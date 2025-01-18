@@ -9,7 +9,20 @@ const config = {
 
 	kit: {
 		adapter: adapter({
-		})
+			pages: 'build',
+			assets: 'build',
+			fallback: undefined,
+			precompress: false,
+			strict: true,
+		}),
+		prerender: {
+			crawl: true,
+			entries: [
+				'*',
+				'/game/colors',
+				'/game/animals'
+			]
+		}
 	}
 };
 
