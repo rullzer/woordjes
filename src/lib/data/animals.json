@@ -1,5 +1,6 @@
 {
 	"name": "Animals",
+	"id": "b652be6a-12d7-493b-a484-407f976f8838",
 	"words": [
 	  { "word": "dog", "translation": "hond" },
 	  { "word": "cat", "translation": "kat" },

@@ -1,40 +1,27 @@
 <script lang="ts">
-	import { page } from '$app/state';
-	import { onMount } from 'svelte';
+	const { data }: { data: { selectedList: string}} = $props();
+	const selectedListId = data.selectedList;
+
 	import { getWordLists } from '$lib/WordListManager';
-	import { WordList } from '$lib/WordList';
 	import { GameSession } from '$lib/GameSession';
 	import type { WordPair } from '$lib/WordPair';
 
-	let session: GameSession | undefined;
-  
-	const wordList = page.params.wordlist;
-	let selectedList: WordList | undefined;
+	const lists = getWordLists();
+	const selectedList = lists.find((l) => l.id === selectedListId)!;
 
-	let currentWord: WordPair | undefined;
-  	let options: string[] = [];
-  	let isCorrect: boolean | undefined = undefined;
-  	let hasAnswered = false;
-	let score = {
+	let session = new GameSession(selectedList);
+
+
+	let currentWord: WordPair | undefined = $state(undefined);
+  	let options: string[] = $state([]);
+  	let isCorrect: boolean | undefined = $state(undefined);
+  	let hasAnswered = $state(false);
+	let score = $state({
 		correct: 0,
 		incorrect: 0
-	};
-	let totalWords = 0;
-	let theAnswer = '';
-  
-	onMount(() => {
-	  const lists = getWordLists();
-	  selectedList = lists.find((list) => list.name === wordList);
-  
-	  if (!selectedList) {
-		console.error('Word list not found!');
-		return;
-	  }
-
-	  session = new GameSession(selectedList);
-	  totalWords = selectedList?.getWordPairs().length;
-	  loadNextWord();
 	});
+	let totalWords = selectedList.getWordPairs().length;
+	let theAnswer = $state('');
 
 	function loadNextWord() {
     	if (session) {
@@ -58,6 +45,8 @@
     	hasAnswered = true;
 		score = session.getScore();
   	}
+
+	loadNextWord();
   </script>
   
   <main>
@@ -74,7 +63,7 @@
           <button
             class:correct={hasAnswered && option === currentWord.translation}
             class:incorrect={hasAnswered && !isCorrect && option === theAnswer}
-            on:click={() => checkAnswer(option)}
+            onclick={() => checkAnswer(option)}
             disabled={hasAnswered}
           >
             {option}
@@ -88,13 +77,13 @@
 		{:else}
 			<p>Helaas...</p>
 		{/if}
-        <button on:click={loadNextWord}>Volgende woord</button>
+        <button onclick={loadNextWord}>Volgende woord</button>
       {/if}
     {:else}
       <h2>Game Over!</h2>
       <p>Goed: {session.getScore().correct}</p>
       <p>Fout: {session.getScore().incorrect}</p>
-      <button on:click={() => (location.href = '/')}>Terug naar begin</button>
+      <button onclick={() => (location.href = '/')}>Terug naar begin</button>
     {/if}
 	{:else}
 	  <p>Loading...</p>

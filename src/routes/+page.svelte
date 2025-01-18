@@ -1,21 +1,17 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { getWordLists } from "$lib/WordListManager";
-
-	const lists = getWordLists();
-
-	const selectList = (listName: string) => {
-		goto(`/game/${listName}`);
-  	};
+	const { data }: { data: { wordLists: {name: string, id: string}[]}} = $props();
+	const wordLists = data.wordLists;
 </script>
 
 <main>
 	<h1>Kies je woordjes</h1>
 	<div class="word-lists">
-	  	{#each lists as list}
-			<button class="word-list-button" on:click={() => selectList(list.name)}>
+	  	{#each wordLists as list}
+			<a href="/game/{list.id}">
+			<button class="word-list-button">
 		  		{list.name}
 			</button>
+			</a>
 	  	{/each}
 	</div>
 </main>

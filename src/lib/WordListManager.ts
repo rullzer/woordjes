@@ -3,12 +3,12 @@ import animals from './data/animals.json';
 import { WordList } from './WordList';
 import { WordPair } from './WordPair';
 
-function parseImport(data: { name: string, words: { word: string, translation: string}[]}) {
+function parseImport(data: { name: string, id: string, words: { word: string, translation: string}[]}) {
 	const wordPairs = data.words.map((word) => {
 		return new WordPair(word.word, word.translation);
 	});
 
-	const wordList = new WordList(data.name);
+	const wordList = new WordList(data.name, data.id);
 	wordPairs.forEach((wordPair) => {
 		wordList.addWordPair(wordPair);
 	});

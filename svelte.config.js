@@ -15,14 +15,6 @@ const config = {
 			precompress: false,
 			strict: true,
 		}),
-		prerender: {
-			crawl: true,
-			entries: [
-				'*',
-				'/game/colors',
-				'/game/animals'
-			]
-		}
 	}
 };
 

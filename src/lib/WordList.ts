@@ -3,7 +3,7 @@ import { WordPair } from "./WordPair";
 export class WordList {
 	private wordPairs: WordPair[] = [];
 
-	constructor(public readonly name: string) {
+	constructor(public readonly name: string, public readonly id: string) {
 
 	}
 
