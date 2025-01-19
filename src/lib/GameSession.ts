@@ -1,8 +1,13 @@
 import { WordList } from "./WordList";
 import { WordPair } from "./WordPair";
 
-const shuffle = <T>(array: T[]) => {
-	return array.sort(() => Math.random() - 0.5);
+function shuffleArray<T>(array: T[]): T[] {
+    const shuffled = [...array]; // Create a copy of the array to avoid mutating the original
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1)); // Random index between 0 and i
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; // Swap elements
+    }
+    return shuffled;
 }
 
 type score = {
@@ -22,7 +27,7 @@ export class GameSession {
 	private i = 0;
 
 	constructor(private readonly wordList: WordList) {
-		this.words = shuffle(wordList.getWordPairs());		
+		this.words = shuffleArray(wordList.getWordPairs());		
 		this.total = this.words.length;
 	}
 
@@ -49,10 +54,10 @@ export class GameSession {
 		const results = [currentExisting.translation];
 
 		const remaining = this.wordList.getWordPairs().filter((pair) => !pair.equals(currentExisting));
-		const randomized = shuffle(remaining);
+		const randomized = shuffleArray(remaining);
 
 		const randomOptions = randomized.slice(0,4).map((pair) => pair.translation);
-		return results.concat(randomOptions);
+		return shuffleArray(results.concat(randomOptions));
 	}
 
 	public answerCurrentWord(answer: string) {
