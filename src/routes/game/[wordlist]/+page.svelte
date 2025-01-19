@@ -16,11 +16,7 @@
   	let options: string[] = $state([]);
   	let isCorrect: boolean | undefined = $state(undefined);
   	let hasAnswered = $state(false);
-	let score = $state({
-		correct: 0,
-		incorrect: 0
-	});
-	let totalWords = selectedList.getWordPairs().length;
+	let score = $state(session.getScore());
 	let theAnswer = $state('');
 
 	function loadNextWord() {
@@ -51,25 +47,33 @@
   
   <main>
 	{#if session && selectedList}
-	  <h1>{selectedList.name}</h1>
-	  <p>Goed: {score.correct}</p>
-	  <p>Fout: {score.incorrect}</p>
-	  <p>Voortgang: {score.correct + score.incorrect} / {totalWords}</p>
+		<div class="header">
+	  		<h1>{selectedList.name}</h1>
+			<div class="scores">
+				<p>Goed: {score.correct}</p>
+				<p>Fout: {score.incorrect}</p>
+				<p>Voortgang: {score.correct + score.incorrect} / {score.total}</p>
+			</div>
+		</div>
 	  
-	  {#if currentWord}
-      <h2>Woord: {currentWord.word}</h2>
-      <div class="options">
-        {#each options as option}
-          <button
-            class:correct={hasAnswered && option === currentWord.translation}
-            class:incorrect={hasAnswered && !isCorrect && option === theAnswer}
-            onclick={() => checkAnswer(option)}
-            disabled={hasAnswered}
-          >
-            {option}
-          </button>
-        {/each}
-      </div>
+		<div class="word">
+			<h2>Woord: {currentWord?.word || 'Klaar!'}</h2>
+		</div>
+	  
+		{#if currentWord}
+		<div class="options">
+			{#each options as option (option)}
+				<button
+            		class:correct={hasAnswered && option === currentWord.translation}
+            		class:incorrect={hasAnswered && !isCorrect && option === theAnswer}
+            		onclick={() => checkAnswer(option)}
+            		disabled={hasAnswered}
+          		>
+            		{option}
+          		</button>
+			{/each}
+		</div>
+      
 
       {#if hasAnswered}
 	  	{#if isCorrect}
@@ -92,45 +96,65 @@
   
   
   <style>
-	main {
-	  text-align: center;
-	  padding: 2rem;
+		main {
+		font-family: Arial, sans-serif;
+		text-align: center;
+		padding: 2rem;
+		max-width: 600px;
+		margin: 0 auto;
 	}
-  
+
+	.header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 2rem;
+	}
+
+	.scores p {
+		margin: 0.5rem;
+		font-size: 1rem;
+	}
+
+	.word h2 {
+		font-size: 1.5rem;
+		margin: 1rem 0;
+		color: #333;
+	}
+
 	.options {
-	  display: flex;
-	  flex-wrap: wrap;
-	  justify-content: center;
-	  gap: 1rem;
-	  margin: 2rem 0;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
 	}
-  
+
 	button {
-	  padding: 1rem 2rem;
-	  font-size: 1.25rem;
-	  border: 2px solid transparent;
-	  border-radius: 8px;
-	  background-color: #007bff;
-	  color: white;
-	  cursor: pointer;
-	  transition: background-color 0.3s, border-color 0.3s;
+		background-color: #007bff;
+		color: white;
+		border: none;
+		padding: 1rem;
+		font-size: 1rem;
+		border-radius: 5px;
+		cursor: pointer;
+		width: 100%;
+		transition: background-color 0.3s ease;
 	}
-  
-	button.correct {
-	  border-color: green;
-	  background-color: #28a745;
-	  border-width: 5px;
+
+	button:hover {
+		background-color: #0056b3;
 	}
-  
-	button.incorrect {
-	  border-color: red;
-	  background-color: #dc3545;
-	  border-width: 5px;
-	}
-  
+
 	button:disabled {
-	  cursor: not-allowed;
-	  background-color: #6c757d;
+		cursor: not-allowed;
+		background-color: #ccc;
+	}
+
+	button.correct {
+		border: 2px solid green;
+	}
+
+	button.incorrect {
+		border: 2px solid red;
 	}
   </style>
   
