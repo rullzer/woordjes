@@ -1,6 +1,4 @@
-import jenna1 from './data/jenna-woordjes-20250324.json'
-import teske2 from './data/teske-woordjes-20250311.json'
-import teske3 from './data/teske-woordjes-engels-26032025.json'
+import jenna1 from './data/jenna-woordjes-engels-20250401.json'
 import { WordList } from './WordList';
 import { WordPair } from './WordPair';
 
@@ -20,7 +18,5 @@ function parseImport(data: { name: string, id: string, words: { word: string, tr
 export function getWordLists(): WordList[] {
 	return [
 		parseImport(jenna1),
-		parseImport(teske2),
-		parseImport(teske3),
 	];
 }
