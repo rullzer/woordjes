@@ -1,0 +1,28 @@
+{
+	"name": "Woordjes Teske Engels 7 Mei",
+	"id": "eff6eeb9-f28e-46a0-a24f-60e5ec847d91",
+	"words": [
+		{ "word": "small", "translation": "klein" },
+		{ "word": "big", "translation": "groot" },
+		{ "word": "fast", "translation": "snel" },
+		{ "word": "slow", "translation": "langzaam" },
+		{ "word": "light", "translation": "licht" },
+		{ "word": "heavy", "translation": "zwaar" },
+		{ "word": "strong", "translation": "sterk" },
+		{ "word": "weak", "translation": "zwak" },
+		{ "word": "screen", "translation": "scherm" },
+		{ "word": "camera", "translation": "camera" },
+		{ "word": "battery", "translation": "batterij" },
+		{ "word": "phone a friend", "translation": "een vriend bellen" },
+		{ "word": "send a message", "translation": "een bericht sturen" },
+		{ "word": "make a video", "translation": "een video maken" },
+
+		{ "word": "It is fast", "translation": "Hij is snel" },
+		{ "word": "It is light", "translation": "Hij is licht" },
+		{ "word": "It has got Bluetooth earbuds", "translation": "Hij heeft Bluetoothoortjes" },
+		{ "word": "It has got a long-lasting battery", "translation": "Hij heft een batterij die heel lang meegaat" },
+		{ "word": "You can take great photos with", "translation": "Je kunt er geweldige foto's mee maken" },
+		{ "word": "You can make videos with it", "translation": "Je kunt er video's mee maken" }
+	]
+  }
+  
