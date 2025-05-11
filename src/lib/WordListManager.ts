@@ -1,4 +1,4 @@
-import jenna1 from './data/jenna-woordjes-engels-20250401.json'
+import jenna1 from './data/jenna-woordjes-20250513.json'
 import teske1 from './data/teske-woordjes-engels-20250507.json'
 import { WordList } from './WordList';
 import { WordPair } from './WordPair';
