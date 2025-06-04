@@ -3,7 +3,7 @@ import teske1 from './data/teske-woordjes-engels-20250507.json'
 import teske2 from './data/teske-woordjes-engels.json'
 import teske3 from './data/teske-woordjes-engels-26032025.json'
 import teske4 from './data/teske-woordjes-20250528.json'
-import teske5 from './data/teske-woordjes-20250621.json'
+import teske5 from './data/teske-woordjes-20250616.json'
 import { WordList } from './WordList';
 import { WordPair } from './WordPair';
 
