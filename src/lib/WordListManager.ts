@@ -22,5 +22,5 @@ export function getWordLists(): WordList[] {
 		parseImport(jenna1),
 		parseImport(teske1),
 		parseImport(teske2),
-	];
+	].flat();
 }
