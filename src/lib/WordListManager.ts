@@ -12,7 +12,13 @@ function parseImport(data: { name: string, id: string, words: { word: string, tr
 	const wordList = new WordList(data.name, data.id);
 	wordList.addWordPairs(wordPairs);
 
-	return [wordList];
+	const reverseWordList = new WordList(data.name + ' andersom', data.id+'_rev');
+	const reverseWordPairs = data.words.map((word) => {
+		return new WordPair(word.translation, word.word);
+	});
+	reverseWordList.addWordPairs(reverseWordPairs);
+
+	return [wordList, reverseWordList];
 }
 
 export function getWordLists(): WordList[] {
