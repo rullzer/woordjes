@@ -21,4 +21,10 @@ export class WordList {
 		
 		this.wordPairs.push(wordPair);
 	}
+
+	public addWordPairs(wordPairs: WordPair[]) {
+		for (const wordPair of wordPairs) {
+			this.addWordPair(wordPair);
+		}
+	}
 }

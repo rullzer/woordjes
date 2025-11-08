@@ -10,9 +10,7 @@ function parseImport(data: { name: string, id: string, words: { word: string, tr
 	});
 
 	const wordList = new WordList(data.name, data.id);
-	wordPairs.forEach((wordPair) => {
-		wordList.addWordPair(wordPair);
-	});
+	wordList.addWordPairs(wordPairs);
 
 	return wordList;
 }
