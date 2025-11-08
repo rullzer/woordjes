@@ -12,7 +12,7 @@ function parseImport(data: { name: string, id: string, words: { word: string, tr
 	const wordList = new WordList(data.name, data.id);
 	wordList.addWordPairs(wordPairs);
 
-	return wordList;
+	return [wordList];
 }
 
 export function getWordLists(): WordList[] {
