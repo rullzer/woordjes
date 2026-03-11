@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	const { data }: { data: { selectedList: string}} = $props();
 	const selectedListId = data.selectedList;
 
@@ -6,18 +7,14 @@
 	import { GameSession } from '$lib/GameSession';
 	import type { WordPair } from '$lib/WordPair';
 
-	const lists = getWordLists();
-	const selectedList = lists.find((l) => l.id === selectedListId)!;
-
-	let session = new GameSession(selectedList);
-
-
+	let session: GameSession | null = $state(null);
 	let currentWord: WordPair | undefined = $state(undefined);
   	let options: string[] = $state([]);
   	let isCorrect: boolean | undefined = $state(undefined);
   	let hasAnswered = $state(false);
-	let score = $state(session.getScore());
+	let score = $state({ correct: 0, incorrect: 0, total: 0 });
 	let theAnswer = $state('');
+	let listName = $state('');
 
 	function loadNextWord() {
     	if (session) {
@@ -28,7 +25,7 @@
         		hasAnswered = false;
         		isCorrect = undefined;
       		} else {
-        		currentWord = undefined; // No more words
+        		currentWord = undefined;
       		}
     	}
   	}
@@ -42,13 +39,20 @@
 		score = session.getScore();
   	}
 
-	loadNextWord();
+	onMount(() => {
+		const lists = getWordLists();
+		const selectedList = lists.find((l) => l.id === selectedListId)!;
+		session = new GameSession(selectedList);
+		listName = selectedList.name;
+		score = session.getScore();
+		loadNextWord();
+	});
   </script>
   
   <main>
-	{#if session && selectedList}
+	{#if session}
 		<div class="header">
-	  		<h1>{selectedList.name}</h1>
+	  		<h1>{listName}</h1>
 			<div class="scores">
 				<p>Goed: {score.correct}</p>
 				<p>Fout: {score.incorrect}</p>
