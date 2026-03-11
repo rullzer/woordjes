@@ -1,5 +1,5 @@
 <script lang="ts">
-	const { data }: { data: { wordLists: {name: string, id: string}[]}} = $props();
+	const { data }: { data: { wordLists: {name: string, id: string, count: number}[]}} = $props();
 	const wordLists = data.wordLists;
 </script>
 
@@ -9,7 +9,7 @@
 	  	{#each wordLists as list}
 			<a href="/game/{list.id}">
 			<button class="word-list-button">
-		  		{list.name}
+		  		{list.name} ({list.count} woorden)
 			</button>
 			</a>
 	  	{/each}

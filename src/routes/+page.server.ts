@@ -4,6 +4,6 @@ export async function load() {
 	const wordLists = getWordLists();
 
   	return {
-    	wordLists: wordLists.map((wordlist) => ({name: wordlist.name, id: wordlist.id})),
+    	wordLists: wordLists.map((wordlist) => ({name: wordlist.name, id: wordlist.id, count: wordlist.getWordPairs().length})),
   	};
 }
