@@ -82,7 +82,7 @@
 
 		{#if currentWord}
 		<div class="word">
-			<h2>Woord: {currentWord.word}</h2>
+			<h2>{currentWord.word}</h2>
 		</div>
 		<div class="options">
 			{#each options as option (option)}
