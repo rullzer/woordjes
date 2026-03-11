@@ -103,7 +103,7 @@
         <div class="feedback" class:feedback-correct={isCorrect} class:feedback-incorrect={!isCorrect}>
           {isCorrect ? 'Goed gedaan! ✓' : 'Helaas... ✗'}
         </div>
-        <button onclick={loadNextWord}>Volgende woord</button>
+        <button class="next-button" onclick={loadNextWord}>Volgende woord →</button>
       {/if}
 		{:else}
       {@const percentage = Math.round((score.correct / score.total) * 100)}
@@ -132,6 +132,24 @@
 		padding: 2rem;
 		max-width: 600px;
 		margin: 0 auto;
+	}
+
+	@media (max-width: 600px) {
+		main {
+			padding: 0.75rem;
+		}
+
+		.header h1 {
+			font-size: 0.9rem;
+		}
+
+		.scores p {
+			font-size: 0.75rem;
+		}
+
+		.word h2 {
+			font-size: 2rem;
+		}
 	}
 
 	.header {
@@ -185,16 +203,24 @@
 		transition: width 0.3s ease;
 	}
 
+	.word {
+		background-color: #f8f9fa;
+		border-radius: 12px;
+		padding: 2rem 1.5rem;
+		margin: 1rem 0 1.5rem;
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+	}
+
 	.word h2 {
-		font-size: 1.5rem;
-		margin: 1rem 0;
+		font-size: 2.5rem;
+		margin: 0;
 		color: #333;
 	}
 
 	.options {
 		display: flex;
 		flex-direction: column;
-		gap: 1rem;
+		gap: 0.75rem;
 	}
 
 	.feedback {
@@ -215,6 +241,16 @@
 		color: #721c24;
 	}
 
+	.next-button {
+		background-color: #fd7e14;
+		font-size: 1.25rem;
+		margin-top: 0.5rem;
+	}
+
+	.next-button:hover {
+		background-color: #e96b02;
+	}
+
 	.game-over {
 		display: flex;
 		flex-direction: column;
@@ -233,9 +269,9 @@
 		background-color: #007bff;
 		color: white;
 		border: none;
-		padding: 1rem;
-		font-size: 1rem;
-		border-radius: 5px;
+		padding: 1.25rem 1rem;
+		font-size: 1.1rem;
+		border-radius: 10px;
 		cursor: pointer;
 		width: 100%;
 		transition: background-color 0.3s ease;
