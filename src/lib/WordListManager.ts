@@ -1,26 +1,21 @@
-import teske3 from './data/teske-woordjes-engels-20260401.json'
 import { WordList } from './WordList';
 import { WordPair } from './WordPair';
 
-function parseImport(data: { name: string, id: string, words: { word: string, translation: string}[]}) {
-	const wordPairs = data.words.map((word) => {
-		return new WordPair(word.word, word.translation);
-	});
+const files = import.meta.glob('./data/*.json', { eager: true }) as Record<
+	string,
+	{ name: string; id: string; words: { word: string; translation: string }[] }
+>;
 
+function parseImport(data: { name: string; id: string; words: { word: string; translation: string }[] }) {
 	const wordList = new WordList(data.name, data.id);
-	wordList.addWordPairs(wordPairs);
+	wordList.addWordPairs(data.words.map((w) => new WordPair(w.word, w.translation)));
 
-	const reverseWordList = new WordList(data.name + ' andersom', data.id+'_rev');
-	const reverseWordPairs = data.words.map((word) => {
-		return new WordPair(word.translation, word.word);
-	});
-	reverseWordList.addWordPairs(reverseWordPairs);
+	const reverseWordList = new WordList(data.name + ' andersom', data.id + '_rev');
+	reverseWordList.addWordPairs(data.words.map((w) => new WordPair(w.translation, w.word)));
 
 	return [wordList, reverseWordList];
 }
 
 export function getWordLists(): WordList[] {
-	return [
-		parseImport(teske3),
-	].flat();
+	return Object.values(files).flatMap(parseImport);
 }
