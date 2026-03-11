@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { fly } from 'svelte/transition';
 	const { data }: { data: { selectedList: string } } = $props();
 	const selectedListId = data.selectedList;
 
@@ -97,9 +98,11 @@
 		</div>
 
 		{#if currentWord}
-			<div class="word">
+			{#key currentWord.word}
+			<div class="word" class:shake={hasAnswered && !isCorrect} in:fly={{ x: 100, duration: 250 }}>
 				<h2>{currentWord.word}</h2>
 			</div>
+			{/key}
 			<div class="options">
 				{#each options as option (option)}
 					{#if !hasAnswered || option === currentWord.translation || option === theAnswer}
@@ -246,6 +249,19 @@
 		padding: 2rem 1.5rem;
 		margin: 1rem 0 1.5rem;
 		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+		overflow: hidden;
+	}
+
+	.word.shake {
+		animation: shake 0.4s ease;
+	}
+
+	@keyframes shake {
+		0%, 100% { transform: translateX(0); }
+		20% { transform: translateX(-8px); }
+		40% { transform: translateX(8px); }
+		60% { transform: translateX(-6px); }
+		80% { transform: translateX(6px); }
 	}
 
 	.word h2 {
