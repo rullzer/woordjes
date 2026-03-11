@@ -1,7 +1,7 @@
 import { WordList } from './WordList';
 import { WordPair } from './WordPair';
 
-const files = import.meta.glob('./data/*.json', { eager: true }) as Record<
+const files = import.meta.glob('./data/*.json', { eager: true, import: 'default' }) as Record<
 	string,
 	{ name: string; id: string; words: { word: string; translation: string }[] }
 >;
