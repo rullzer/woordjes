@@ -70,12 +70,14 @@
 			<div class="scores">
 				<p>Goed: {score.correct}</p>
 				<p>Fout: {score.incorrect}</p>
-				<p>Voortgang: {score.correct + score.incorrect} / {score.total}</p>
 			</div>
 		</div>
 	  
-		<div class="progress-bar">
-			<div class="progress-fill" style="width: {((score.correct + score.incorrect) / score.total) * 100}%"></div>
+		<div class="progress-container">
+			<div class="progress-bar">
+				<div class="progress-fill" style="width: {((score.correct + score.incorrect) / score.total) * 100}%"></div>
+			</div>
+			<span class="progress-count">{score.correct + score.incorrect} / {score.total}</span>
 		</div>
 
 		{#if currentWord}
@@ -138,21 +140,44 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		margin-bottom: 2rem;
+		margin-bottom: 1rem;
+	}
+
+	.header h1 {
+		font-size: 1.1rem;
+		margin: 0;
+	}
+
+	.scores {
+		display: flex;
+		gap: 1rem;
 	}
 
 	.scores p {
-		margin: 0.5rem;
-		font-size: 1rem;
+		margin: 0;
+		font-size: 0.875rem;
+		color: #666;
+	}
+
+	.progress-container {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-bottom: 1.5rem;
 	}
 
 	.progress-bar {
-		width: 100%;
+		flex: 1;
 		height: 10px;
 		background-color: #e0e0e0;
 		border-radius: 5px;
 		overflow: hidden;
-		margin-bottom: 1.5rem;
+	}
+
+	.progress-count {
+		font-size: 0.875rem;
+		color: #666;
+		white-space: nowrap;
 	}
 
 	.progress-fill {
