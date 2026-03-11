@@ -56,6 +56,10 @@
 			</div>
 		</div>
 	  
+		<div class="progress-bar">
+			<div class="progress-fill" style="width: {((score.correct + score.incorrect) / score.total) * 100}%"></div>
+		</div>
+
 		<div class="word">
 			<h2>Woord: {currentWord?.word || 'Klaar!'}</h2>
 		</div>
@@ -115,6 +119,22 @@
 	.scores p {
 		margin: 0.5rem;
 		font-size: 1rem;
+	}
+
+	.progress-bar {
+		width: 100%;
+		height: 10px;
+		background-color: #e0e0e0;
+		border-radius: 5px;
+		overflow: hidden;
+		margin-bottom: 1.5rem;
+	}
+
+	.progress-fill {
+		height: 100%;
+		background-color: #007bff;
+		border-radius: 5px;
+		transition: width 0.3s ease;
 	}
 
 	.word h2 {
