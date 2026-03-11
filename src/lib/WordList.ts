@@ -1,4 +1,4 @@
-import { WordPair } from "./WordPair";
+import { WordPair } from './WordPair';
 
 export type WordListLabels = {
 	word: string;
@@ -13,7 +13,7 @@ export class WordList {
 		public readonly id: string,
 		public readonly for_: string,
 		public readonly date: string,
-		public readonly labels: WordListLabels,
+		public readonly labels: WordListLabels
 	) {}
 
 	public getWordPairs() {
@@ -21,13 +21,15 @@ export class WordList {
 	}
 
 	public addWordPair(wordPair: WordPair) {
-		if (this.wordPairs.some((pair) => {
-			return pair.equals(wordPair);
-		})) {
+		if (
+			this.wordPairs.some((pair) => {
+				return pair.equals(wordPair);
+			})
+		) {
 			// Do not add duplicates
 			return;
 		}
-		
+
 		this.wordPairs.push(wordPair);
 	}
 

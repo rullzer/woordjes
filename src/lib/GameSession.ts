@@ -1,20 +1,20 @@
-import { WordList } from "./WordList";
-import { WordPair } from "./WordPair";
+import { WordList } from './WordList';
+import { WordPair } from './WordPair';
 
 function shuffleArray<T>(array: T[]): T[] {
-    const shuffled = [...array]; // Create a copy of the array to avoid mutating the original
-    for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1)); // Random index between 0 and i
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; // Swap elements
-    }
-    return shuffled;
+	const shuffled = [...array]; // Create a copy of the array to avoid mutating the original
+	for (let i = shuffled.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1)); // Random index between 0 and i
+		[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; // Swap elements
+	}
+	return shuffled;
 }
 
 type score = {
 	correct: number;
 	incorrect: number;
 	total: number;
-}
+};
 
 export class GameSession {
 	private words: WordPair[];
@@ -28,7 +28,7 @@ export class GameSession {
 	private i = 0;
 
 	constructor(private readonly wordList: WordList) {
-		this.words = shuffleArray(wordList.getWordPairs());		
+		this.words = shuffleArray(wordList.getWordPairs());
 		this.total = this.words.length;
 	}
 
@@ -57,7 +57,7 @@ export class GameSession {
 		const remaining = this.wordList.getWordPairs().filter((pair) => !pair.equals(currentExisting));
 		const randomized = shuffleArray(remaining);
 
-		const randomOptions = randomized.slice(0,4).map((pair) => pair.translation);
+		const randomOptions = randomized.slice(0, 4).map((pair) => pair.translation);
 		return shuffleArray(results.concat(randomOptions));
 	}
 
@@ -68,8 +68,8 @@ export class GameSession {
 		} else {
 			this.incorrect++;
 			if (this.currentWord) {
-			this.wrongWords.push(this.currentWord);
-		}
+				this.wrongWords.push(this.currentWord);
+			}
 			return false;
 		}
 	}
@@ -82,7 +82,7 @@ export class GameSession {
 		return {
 			correct: this.correct,
 			incorrect: this.incorrect,
-			total: this.total,
+			total: this.total
 		};
 	}
 }

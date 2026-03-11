@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	const { data }: { data: { selectedList: string}} = $props();
+	const { data }: { data: { selectedList: string } } = $props();
 	const selectedListId = data.selectedList;
 
 	import { getWordLists } from '$lib/WordListManager';
@@ -11,9 +11,9 @@
 
 	let session: GameSession | null = $state(null);
 	let currentWord: WordPair | undefined = $state(undefined);
-  	let options: string[] = $state([]);
-  	let isCorrect: boolean | undefined = $state(undefined);
-  	let hasAnswered = $state(false);
+	let options: string[] = $state([]);
+	let isCorrect: boolean | undefined = $state(undefined);
+	let hasAnswered = $state(false);
 	let score = $state({ correct: 0, incorrect: 0, total: 0 });
 	let theAnswer = $state('');
 	let listName = $state('');
@@ -22,27 +22,27 @@
 	let listLabels = $state<WordListLabels>({ word: '', translation: '' });
 
 	function loadNextWord() {
-    	if (session) {
-      		const nextWord = session.getNextWord();
-      		if (nextWord) {
-        		currentWord = nextWord;
-        		options = session.getMultipleChoiceOptions();
-        		hasAnswered = false;
-        		isCorrect = undefined;
-      		} else {
-        		currentWord = undefined;
-      		}
-    	}
-  	}
+		if (session) {
+			const nextWord = session.getNextWord();
+			if (nextWord) {
+				currentWord = nextWord;
+				options = session.getMultipleChoiceOptions();
+				hasAnswered = false;
+				isCorrect = undefined;
+			} else {
+				currentWord = undefined;
+			}
+		}
+	}
 
-  	function checkAnswer(answer: string) {
-    	if (!session || !currentWord) return;
+	function checkAnswer(answer: string) {
+		if (!session || !currentWord) return;
 
 		theAnswer = answer;
-    	isCorrect = session.answerCurrentWord(answer);
-    	hasAnswered = true;
+		isCorrect = session.answerCurrentWord(answer);
+		hasAnswered = true;
 		score = session.getScore();
-  	}
+	}
 
 	function startSession(wordList: WordList) {
 		session = new GameSession(wordList);
@@ -58,7 +58,13 @@
 	function retryWrongWords() {
 		if (!session) return;
 		const wrongWords = session.getWrongWords();
-		const retryList = new WordList(listName, selectedListId + '_retry', listFor, listDate, listLabels);
+		const retryList = new WordList(
+			listName,
+			selectedListId + '_retry',
+			listFor,
+			listDate,
+			listLabels
+		);
 		retryList.addWordPairs(wrongWords);
 		startSession(retryList);
 	}
@@ -68,84 +74,95 @@
 		const selectedList = lists.find((l) => l.id === selectedListId)!;
 		startSession(selectedList);
 	});
-  </script>
-  
-  <main>
+</script>
+
+<main>
 	{#if session}
 		<div class="header">
-	  		<h1>{listName}</h1>
+			<h1>{listName}</h1>
 			<div class="scores">
 				<p>Goed: {score.correct}</p>
 				<p>Fout: {score.incorrect}</p>
 			</div>
 		</div>
-	  
+
 		<div class="progress-container">
 			<div class="progress-bar">
-				<div class="progress-fill" style="width: {((score.correct + score.incorrect) / score.total) * 100}%"></div>
+				<div
+					class="progress-fill"
+					style="width: {((score.correct + score.incorrect) / score.total) * 100}%"
+				></div>
 			</div>
 			<span class="progress-count">{score.correct + score.incorrect} / {score.total}</span>
 		</div>
 
 		{#if currentWord}
-		<div class="word">
-			<h2>{currentWord.word}</h2>
-		</div>
-		<div class="options">
-			{#each options as option (option)}
-				{#if !hasAnswered || option === currentWord.translation || option === theAnswer}
-				<button
-	            	class:correct={hasAnswered && option === currentWord.translation}
-	            	class:incorrect={hasAnswered && !isCorrect && option === theAnswer}
-	            	onclick={() => checkAnswer(option)}
-	            	disabled={hasAnswered}
-	          	>
-	            	{option}
-	          	</button>
+			<div class="word">
+				<h2>{currentWord.word}</h2>
+			</div>
+			<div class="options">
+				{#each options as option (option)}
+					{#if !hasAnswered || option === currentWord.translation || option === theAnswer}
+						<button
+							class:correct={hasAnswered && option === currentWord.translation}
+							class:incorrect={hasAnswered && !isCorrect && option === theAnswer}
+							onclick={() => checkAnswer(option)}
+							disabled={hasAnswered}
+						>
+							{option}
+						</button>
+					{/if}
+				{/each}
+			</div>
+
+			{#if hasAnswered}
+				<div
+					class="feedback"
+					class:feedback-correct={isCorrect}
+					class:feedback-incorrect={!isCorrect}
+				>
+					{isCorrect ? 'Goed gedaan! ✓' : 'Helaas... ✗'}
+				</div>
+				<button class="next-button" onclick={loadNextWord}>Volgende woord →</button>
 			{/if}
-			{/each}
-		</div>
-
-      {#if hasAnswered}
-        <div class="feedback" class:feedback-correct={isCorrect} class:feedback-incorrect={!isCorrect}>
-          {isCorrect ? 'Goed gedaan! ✓' : 'Helaas... ✗'}
-        </div>
-        <button class="next-button" onclick={loadNextWord}>Volgende woord →</button>
-      {/if}
-
 		{:else}
-      {@const percentage = Math.round((score.correct / score.total) * 100)}
-      {@const message = percentage === 100 ? 'Perfecte score! 🎉' : percentage >= 80 ? 'Goed gedaan!' : percentage >= 60 ? 'Aardig, maar er is nog ruimte voor verbetering.' : 'Nog even oefenen!'}
-      <div class="game-over">
-        <h2>{message}</h2>
-        <p class="percentage">{percentage}%</p>
-        <p>Goed: {score.correct} / {score.total}</p>
-        <p>Fout: {score.incorrect} / {score.total}</p>
-        {#if score.incorrect > 0}
-          <div class="wrong-answers">
-            <h3>Foute woordjes:</h3>
-            {#each session.getWrongWords() as pair}
-              <div class="wrong-pair">
-                <span class="wrong-word">{pair.word}</span>
-                <span class="wrong-arrow">→</span>
-                <span class="wrong-translation">{pair.translation}</span>
-              </div>
-            {/each}
-          </div>
-          <button onclick={retryWrongWords}>Opnieuw met foute woordjes ({score.incorrect})</button>
-        {/if}
-        <button onclick={() => (location.href = '/')}>Terug naar begin</button>
-      </div>
-    {/if}
+			{@const percentage = Math.round((score.correct / score.total) * 100)}
+			{@const message =
+				percentage === 100
+					? 'Perfecte score! 🎉'
+					: percentage >= 80
+						? 'Goed gedaan!'
+						: percentage >= 60
+							? 'Aardig, maar er is nog ruimte voor verbetering.'
+							: 'Nog even oefenen!'}
+			<div class="game-over">
+				<h2>{message}</h2>
+				<p class="percentage">{percentage}%</p>
+				<p>Goed: {score.correct} / {score.total}</p>
+				<p>Fout: {score.incorrect} / {score.total}</p>
+				{#if score.incorrect > 0}
+					<div class="wrong-answers">
+						<h3>Foute woordjes:</h3>
+						{#each session.getWrongWords() as pair}
+							<div class="wrong-pair">
+								<span class="wrong-word">{pair.word}</span>
+								<span class="wrong-arrow">→</span>
+								<span class="wrong-translation">{pair.translation}</span>
+							</div>
+						{/each}
+					</div>
+					<button onclick={retryWrongWords}>Opnieuw met foute woordjes ({score.incorrect})</button>
+				{/if}
+				<button onclick={() => (location.href = '/')}>Terug naar begin</button>
+			</div>
+		{/if}
 	{:else}
-	  <p>Loading...</p>
+		<p>Loading...</p>
 	{/if}
-  </main>
+</main>
 
-  
-  
-  <style>
-		main {
+<style>
+	main {
 		font-family: Arial, sans-serif;
 		text-align: center;
 		padding: 2rem;
@@ -242,7 +259,6 @@
 		flex-direction: column;
 		gap: 0.75rem;
 	}
-
 
 	.feedback {
 		padding: 0.75rem 1rem;
@@ -352,6 +368,4 @@
 	button.incorrect {
 		background-color: #dc3545;
 	}
-
-  </style>
-  
+</style>

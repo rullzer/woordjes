@@ -1,5 +1,5 @@
 <script lang="ts">
-	const { data }: { data: { wordLists: {name: string, id: string, count: number}[]}} = $props();
+	const { data }: { data: { wordLists: { name: string; id: string; count: number }[] } } = $props();
 	const wordLists = data.wordLists;
 </script>
 
@@ -9,15 +9,14 @@
 		<p class="subtitle">Kies een lijst om mee te oefenen</p>
 	</div>
 	<div class="word-lists">
-	  	{#each wordLists as list}
+		{#each wordLists as list}
 			<a href="/game/{list.id}" class="word-list-card">
 				<span class="list-name">{list.name}</span>
 				<span class="list-count">{list.count} woorden</span>
 			</a>
-	  	{/each}
+		{/each}
 	</div>
 </main>
-
 
 <style>
 	main {
@@ -60,7 +59,9 @@
 		text-decoration: none;
 		color: inherit;
 		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-		transition: background-color 0.2s, box-shadow 0.2s;
+		transition:
+			background-color 0.2s,
+			box-shadow 0.2s;
 	}
 
 	.word-list-card:hover {

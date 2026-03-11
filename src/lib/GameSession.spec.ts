@@ -4,7 +4,10 @@ import { WordList } from './WordList';
 import { WordPair } from './WordPair';
 
 function makeWordList(pairs: [string, string][]): WordList {
-	const list = new WordList('Test', 'test', 'Test', '2026-01-01', { word: 'Nederlands', translation: 'Engels' });
+	const list = new WordList('Test', 'test', 'Test', '2026-01-01', {
+		word: 'Nederlands',
+		translation: 'Engels'
+	});
 	list.addWordPairs(pairs.map(([word, translation]) => new WordPair(word, translation)));
 	return list;
 }
@@ -15,7 +18,7 @@ describe('GameSession', () => {
 			const list = makeWordList([
 				['hond', 'dog'],
 				['kat', 'cat'],
-				['vis', 'fish'],
+				['vis', 'fish']
 			]);
 			const session = new GameSession(list);
 			const seen: string[] = [];
@@ -51,7 +54,7 @@ describe('GameSession', () => {
 				['kat', 'cat'],
 				['vis', 'fish'],
 				['vogel', 'bird'],
-				['paard', 'horse'],
+				['paard', 'horse']
 			]);
 			const session = new GameSession(list);
 			const word = session.getNextWord()!;
@@ -66,7 +69,7 @@ describe('GameSession', () => {
 				['vis', 'fish'],
 				['vogel', 'bird'],
 				['paard', 'horse'],
-				['koe', 'cow'],
+				['koe', 'cow']
 			]);
 			const session = new GameSession(list);
 			session.getNextWord();
@@ -107,7 +110,10 @@ describe('GameSession', () => {
 		});
 
 		it('returns words answered incorrectly', () => {
-			const list = makeWordList([['hond', 'dog'], ['kat', 'cat']]);
+			const list = makeWordList([
+				['hond', 'dog'],
+				['kat', 'cat']
+			]);
 			const session = new GameSession(list);
 			session.getNextWord();
 			session.answerCurrentWord('wrong');
@@ -117,7 +123,10 @@ describe('GameSession', () => {
 		});
 
 		it('does not include correctly answered words', () => {
-			const list = makeWordList([['hond', 'dog'], ['kat', 'cat']]);
+			const list = makeWordList([
+				['hond', 'dog'],
+				['kat', 'cat']
+			]);
 			const session = new GameSession(list);
 			const first = session.getNextWord()!;
 			session.answerCurrentWord(first.translation);
@@ -135,7 +144,10 @@ describe('GameSession', () => {
 		});
 
 		it('tracks correct answers', () => {
-			const list = makeWordList([['hond', 'dog'], ['kat', 'cat']]);
+			const list = makeWordList([
+				['hond', 'dog'],
+				['kat', 'cat']
+			]);
 			const session = new GameSession(list);
 			session.getNextWord();
 			session.answerCurrentWord(session.getWords()[0].translation);
@@ -154,7 +166,11 @@ describe('GameSession', () => {
 		});
 
 		it('reflects total word count', () => {
-			const list = makeWordList([['hond', 'dog'], ['kat', 'cat'], ['vis', 'fish']]);
+			const list = makeWordList([
+				['hond', 'dog'],
+				['kat', 'cat'],
+				['vis', 'fish']
+			]);
 			const session = new GameSession(list);
 			expect(session.getScore().total).toBe(3);
 		});

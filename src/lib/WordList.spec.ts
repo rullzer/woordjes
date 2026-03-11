@@ -40,7 +40,7 @@ describe('WordList', () => {
 		list.addWordPairs([
 			new WordPair('hond', 'dog'),
 			new WordPair('hond', 'dog'),
-			new WordPair('kat', 'cat'),
+			new WordPair('kat', 'cat')
 		]);
 		expect(list.getWordPairs()).toHaveLength(2);
 	});
