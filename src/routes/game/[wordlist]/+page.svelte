@@ -100,11 +100,9 @@
       
 
       {#if hasAnswered}
-	  	{#if isCorrect}
-		  	<p>Goed gedaan!</p>
-		{:else}
-			<p>Helaas...</p>
-		{/if}
+        <div class="feedback" class:feedback-correct={isCorrect} class:feedback-incorrect={!isCorrect}>
+          {isCorrect ? 'Goed gedaan! ✓' : 'Helaas... ✗'}
+        </div>
         <button onclick={loadNextWord}>Volgende woord</button>
       {/if}
 		{:else}
@@ -197,6 +195,24 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
+	}
+
+	.feedback {
+		padding: 0.75rem 1rem;
+		border-radius: 8px;
+		font-size: 1.1rem;
+		font-weight: bold;
+		margin-top: 1rem;
+	}
+
+	.feedback-correct {
+		background-color: #d4edda;
+		color: #155724;
+	}
+
+	.feedback-incorrect {
+		background-color: #f8d7da;
+		color: #721c24;
 	}
 
 	.game-over {
