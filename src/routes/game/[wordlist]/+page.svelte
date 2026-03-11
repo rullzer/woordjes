@@ -70,7 +70,7 @@
 	});
   </script>
   
-  <main class:has-bottom-bar={hasAnswered && currentWord}>
+  <main>
 	{#if session}
 		<div class="header">
 	  		<h1>{listName}</h1>
@@ -93,18 +93,25 @@
 		</div>
 		<div class="options">
 			{#each options as option (option)}
+				{#if !hasAnswered || option === currentWord.translation || option === theAnswer}
 				<button
-            		class:correct={hasAnswered && option === currentWord.translation}
-            		class:incorrect={hasAnswered && !isCorrect && option === theAnswer}
-            		class:neutral={hasAnswered && option !== currentWord.translation && option !== theAnswer}
-            		onclick={() => checkAnswer(option)}
-            		disabled={hasAnswered}
-          		>
-            		{option}
-          		</button>
+	            	class:correct={hasAnswered && option === currentWord.translation}
+	            	class:incorrect={hasAnswered && !isCorrect && option === theAnswer}
+	            	onclick={() => checkAnswer(option)}
+	            	disabled={hasAnswered}
+	          	>
+	            	{option}
+	          	</button>
+			{/if}
 			{/each}
 		</div>
-      
+
+      {#if hasAnswered}
+        <div class="feedback" class:feedback-correct={isCorrect} class:feedback-incorrect={!isCorrect}>
+          {isCorrect ? 'Goed gedaan! ✓' : 'Helaas... ✗'}
+        </div>
+        <button class="next-button" onclick={loadNextWord}>Volgende woord →</button>
+      {/if}
 
 		{:else}
       {@const percentage = Math.round((score.correct / score.total) * 100)}
@@ -135,12 +142,6 @@
 	{/if}
   </main>
 
-{#if hasAnswered && currentWord}
-  <div class="bottom-bar" class:bottom-bar-correct={isCorrect} class:bottom-bar-incorrect={!isCorrect}>
-    <span class="bottom-bar-feedback">{isCorrect ? 'Goed gedaan! ✓' : 'Helaas... ✗'}</span>
-    <button class="next-button" onclick={loadNextWord}>Volgende woord →</button>
-  </div>
-{/if}
   
   
   <style>
@@ -149,10 +150,6 @@
 		text-align: center;
 		padding: 2rem;
 		padding-bottom: 2rem;
-	}
-
-	main.has-bottom-bar {
-		padding-bottom: 8rem;
 		max-width: 600px;
 		margin: 0 auto;
 	}
@@ -247,45 +244,28 @@
 	}
 
 
-	.bottom-bar {
-		position: fixed;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 1rem 1.5rem;
-		gap: 1rem;
-		box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-	}
-
-	.bottom-bar-correct {
-		background-color: #d4edda;
-	}
-
-	.bottom-bar-incorrect {
-		background-color: #f8d7da;
-	}
-
-	.bottom-bar-feedback {
+	.feedback {
+		padding: 0.75rem 1rem;
+		border-radius: 8px;
 		font-size: 1.1rem;
 		font-weight: bold;
+		margin-top: 1rem;
 	}
 
-	.bottom-bar-correct .bottom-bar-feedback {
+	.feedback-correct {
+		background-color: #d4edda;
 		color: #155724;
 	}
 
-	.bottom-bar-incorrect .bottom-bar-feedback {
+	.feedback-incorrect {
+		background-color: #f8d7da;
 		color: #721c24;
 	}
 
 	.next-button {
 		background-color: #fd7e14;
-		font-size: 1.1rem;
-		width: auto;
-		white-space: nowrap;
+		font-size: 1.25rem;
+		margin-top: 0.5rem;
 	}
 
 	.next-button:hover {
@@ -373,8 +353,5 @@
 		background-color: #dc3545;
 	}
 
-	button.neutral:disabled {
-		background-color: #ccc;
-	}
   </style>
   
