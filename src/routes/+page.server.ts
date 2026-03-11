@@ -1,5 +1,7 @@
 import { getWordLists } from "$lib/WordListManager";
 
+export const prerender = true;
+
 export async function load() {
 	const wordLists = getWordLists();
 
