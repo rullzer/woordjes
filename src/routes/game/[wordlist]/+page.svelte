@@ -66,6 +66,7 @@
 				<button
             		class:correct={hasAnswered && option === currentWord.translation}
             		class:incorrect={hasAnswered && !isCorrect && option === theAnswer}
+            		class:neutral={hasAnswered && option !== currentWord.translation && option !== theAnswer}
             		onclick={() => checkAnswer(option)}
             		disabled={hasAnswered}
           		>
@@ -146,15 +147,18 @@
 
 	button:disabled {
 		cursor: not-allowed;
-		background-color: #ccc;
 	}
 
 	button.correct {
-		border: 2px solid green;
+		background-color: #28a745;
 	}
 
 	button.incorrect {
-		border: 2px solid red;
+		background-color: #dc3545;
+	}
+
+	button.neutral:disabled {
+		background-color: #ccc;
 	}
   </style>
   
