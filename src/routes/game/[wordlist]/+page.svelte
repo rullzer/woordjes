@@ -106,10 +106,13 @@
         <button onclick={loadNextWord}>Volgende woord</button>
       {/if}
 		{:else}
+      {@const percentage = Math.round((score.correct / score.total) * 100)}
+      {@const message = percentage === 100 ? 'Perfecte score! 🎉' : percentage >= 80 ? 'Goed gedaan!' : percentage >= 60 ? 'Aardig, maar er is nog ruimte voor verbetering.' : 'Nog even oefenen!'}
       <div class="game-over">
-        <h2>Klaar!</h2>
-        <p>Goed: {score.correct}</p>
-        <p>Fout: {score.incorrect}</p>
+        <h2>{message}</h2>
+        <p class="percentage">{percentage}%</p>
+        <p>Goed: {score.correct} / {score.total}</p>
+        <p>Fout: {score.incorrect} / {score.total}</p>
         {#if score.incorrect > 0}
           <button onclick={retryWrongWords}>Opnieuw met foute woordjes ({score.incorrect})</button>
         {/if}
@@ -176,6 +179,13 @@
 		flex-direction: column;
 		gap: 1rem;
 		margin-top: 2rem;
+	}
+
+	.percentage {
+		font-size: 4rem;
+		font-weight: bold;
+		color: #007bff;
+		margin: 0;
 	}
 
 	button {
