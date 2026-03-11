@@ -114,6 +114,16 @@
         <p>Goed: {score.correct} / {score.total}</p>
         <p>Fout: {score.incorrect} / {score.total}</p>
         {#if score.incorrect > 0}
+          <div class="wrong-answers">
+            <h3>Foute woordjes:</h3>
+            {#each session.getWrongWords() as pair}
+              <div class="wrong-pair">
+                <span class="wrong-word">{pair.word}</span>
+                <span class="wrong-arrow">→</span>
+                <span class="wrong-translation">{pair.translation}</span>
+              </div>
+            {/each}
+          </div>
           <button onclick={retryWrongWords}>Opnieuw met foute woordjes ({score.incorrect})</button>
         {/if}
         <button onclick={() => (location.href = '/')}>Terug naar begin</button>
@@ -256,6 +266,45 @@
 		flex-direction: column;
 		gap: 1rem;
 		margin-top: 2rem;
+	}
+
+	.wrong-answers {
+		background-color: #f8f9fa;
+		border-radius: 10px;
+		padding: 1rem 1.5rem;
+		text-align: left;
+	}
+
+	.wrong-answers h3 {
+		margin: 0 0 0.75rem;
+		font-size: 1rem;
+		color: #666;
+	}
+
+	.wrong-pair {
+		display: flex;
+		gap: 0.5rem;
+		padding: 0.4rem 0;
+		border-bottom: 1px solid #e0e0e0;
+		font-size: 1rem;
+	}
+
+	.wrong-pair:last-child {
+		border-bottom: none;
+	}
+
+	.wrong-word {
+		font-weight: bold;
+		flex: 1;
+	}
+
+	.wrong-arrow {
+		color: #999;
+	}
+
+	.wrong-translation {
+		flex: 1;
+		color: #dc3545;
 	}
 
 	.percentage {
