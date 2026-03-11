@@ -1,11 +1,20 @@
 import { WordPair } from "./WordPair";
 
+export type WordListLabels = {
+	word: string;
+	translation: string;
+};
+
 export class WordList {
 	private wordPairs: WordPair[] = [];
 
-	constructor(public readonly name: string, public readonly id: string) {
-
-	}
+	constructor(
+		public readonly name: string,
+		public readonly id: string,
+		public readonly for_: string,
+		public readonly date: string,
+		public readonly labels: WordListLabels,
+	) {}
 
 	public getWordPairs() {
 		return this.wordPairs;

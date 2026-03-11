@@ -1,6 +1,12 @@
 {
-  "name": "Woordjes Teske Engels - 1 April",
   "id": "9cdc5aab-076c-4bb3-8bef-a5681dbfd44a",
+  "name": "Woordjes Teske Engels - 1 April",
+  "for": "Teske",
+  "date": "2026-04-01",
+  "labels": {
+    "word": "Engels",
+    "translation": "Nederlands"
+  },
   "words": [
     { "word": "type", "translation": "type, soort" },
     { "word": "electric", "translation": "elektrisch" },

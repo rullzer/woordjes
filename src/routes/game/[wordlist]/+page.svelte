@@ -6,6 +6,7 @@
 	import { getWordLists } from '$lib/WordListManager';
 	import { GameSession } from '$lib/GameSession';
 	import { WordList } from '$lib/WordList';
+	import type { WordListLabels } from '$lib/WordList';
 	import type { WordPair } from '$lib/WordPair';
 
 	let session: GameSession | null = $state(null);
@@ -16,6 +17,9 @@
 	let score = $state({ correct: 0, incorrect: 0, total: 0 });
 	let theAnswer = $state('');
 	let listName = $state('');
+	let listFor = $state('');
+	let listDate = $state('');
+	let listLabels = $state<WordListLabels>({ word: '', translation: '' });
 
 	function loadNextWord() {
     	if (session) {
@@ -43,6 +47,9 @@
 	function startSession(wordList: WordList) {
 		session = new GameSession(wordList);
 		listName = wordList.name;
+		listFor = wordList.for_;
+		listDate = wordList.date;
+		listLabels = wordList.labels;
 		score = session.getScore();
 		currentWord = undefined;
 		loadNextWord();
@@ -51,7 +58,7 @@
 	function retryWrongWords() {
 		if (!session) return;
 		const wrongWords = session.getWrongWords();
-		const retryList = new WordList(listName, selectedListId + '_retry');
+		const retryList = new WordList(listName, selectedListId + '_retry', listFor, listDate, listLabels);
 		retryList.addWordPairs(wrongWords);
 		startSession(retryList);
 	}
@@ -63,7 +70,7 @@
 	});
   </script>
   
-  <main>
+  <main class:has-bottom-bar={hasAnswered && currentWord}>
 	{#if session}
 		<div class="header">
 	  		<h1>{listName}</h1>
@@ -99,12 +106,6 @@
 		</div>
       
 
-      {#if hasAnswered}
-        <div class="feedback" class:feedback-correct={isCorrect} class:feedback-incorrect={!isCorrect}>
-          {isCorrect ? 'Goed gedaan! ✓' : 'Helaas... ✗'}
-        </div>
-        <button class="next-button" onclick={loadNextWord}>Volgende woord →</button>
-      {/if}
 		{:else}
       {@const percentage = Math.round((score.correct / score.total) * 100)}
       {@const message = percentage === 100 ? 'Perfecte score! 🎉' : percentage >= 80 ? 'Goed gedaan!' : percentage >= 60 ? 'Aardig, maar er is nog ruimte voor verbetering.' : 'Nog even oefenen!'}
@@ -133,6 +134,13 @@
 	  <p>Loading...</p>
 	{/if}
   </main>
+
+{#if hasAnswered && currentWord}
+  <div class="bottom-bar" class:bottom-bar-correct={isCorrect} class:bottom-bar-incorrect={!isCorrect}>
+    <span class="bottom-bar-feedback">{isCorrect ? 'Goed gedaan! ✓' : 'Helaas... ✗'}</span>
+    <button class="next-button" onclick={loadNextWord}>Volgende woord →</button>
+  </div>
+{/if}
   
   
   <style>
@@ -140,6 +148,11 @@
 		font-family: Arial, sans-serif;
 		text-align: center;
 		padding: 2rem;
+		padding-bottom: 2rem;
+	}
+
+	main.has-bottom-bar {
+		padding-bottom: 8rem;
 		max-width: 600px;
 		margin: 0 auto;
 	}
@@ -233,28 +246,46 @@
 		gap: 0.75rem;
 	}
 
-	.feedback {
-		padding: 0.75rem 1rem;
-		border-radius: 8px;
-		font-size: 1.1rem;
-		font-weight: bold;
-		margin-top: 1rem;
+
+	.bottom-bar {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 1rem 1.5rem;
+		gap: 1rem;
+		box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
 	}
 
-	.feedback-correct {
+	.bottom-bar-correct {
 		background-color: #d4edda;
+	}
+
+	.bottom-bar-incorrect {
+		background-color: #f8d7da;
+	}
+
+	.bottom-bar-feedback {
+		font-size: 1.1rem;
+		font-weight: bold;
+	}
+
+	.bottom-bar-correct .bottom-bar-feedback {
 		color: #155724;
 	}
 
-	.feedback-incorrect {
-		background-color: #f8d7da;
+	.bottom-bar-incorrect .bottom-bar-feedback {
 		color: #721c24;
 	}
 
 	.next-button {
 		background-color: #fd7e14;
-		font-size: 1.25rem;
-		margin-top: 0.5rem;
+		font-size: 1.1rem;
+		width: auto;
+		white-space: nowrap;
 	}
 
 	.next-button:hover {

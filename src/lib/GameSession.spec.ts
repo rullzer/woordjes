@@ -4,7 +4,7 @@ import { WordList } from './WordList';
 import { WordPair } from './WordPair';
 
 function makeWordList(pairs: [string, string][]): WordList {
-	const list = new WordList('Test', 'test');
+	const list = new WordList('Test', 'test', 'Test', '2026-01-01', { word: 'Nederlands', translation: 'Engels' });
 	list.addWordPairs(pairs.map(([word, translation]) => new WordPair(word, translation)));
 	return list;
 }
