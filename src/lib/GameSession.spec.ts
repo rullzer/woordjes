@@ -97,6 +97,36 @@ describe('GameSession', () => {
 		});
 	});
 
+	describe('getWrongWords', () => {
+		it('returns empty array when no wrong answers', () => {
+			const list = makeWordList([['hond', 'dog']]);
+			const session = new GameSession(list);
+			session.getNextWord();
+			session.answerCurrentWord('dog');
+			expect(session.getWrongWords()).toHaveLength(0);
+		});
+
+		it('returns words answered incorrectly', () => {
+			const list = makeWordList([['hond', 'dog'], ['kat', 'cat']]);
+			const session = new GameSession(list);
+			session.getNextWord();
+			session.answerCurrentWord('wrong');
+			session.getNextWord();
+			session.answerCurrentWord('wrong');
+			expect(session.getWrongWords()).toHaveLength(2);
+		});
+
+		it('does not include correctly answered words', () => {
+			const list = makeWordList([['hond', 'dog'], ['kat', 'cat']]);
+			const session = new GameSession(list);
+			const first = session.getNextWord()!;
+			session.answerCurrentWord(first.translation);
+			session.getNextWord();
+			session.answerCurrentWord('wrong');
+			expect(session.getWrongWords()).toHaveLength(1);
+		});
+	});
+
 	describe('getScore', () => {
 		it('starts at zero', () => {
 			const list = makeWordList([['hond', 'dog']]);

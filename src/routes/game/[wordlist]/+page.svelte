@@ -5,6 +5,7 @@
 
 	import { getWordLists } from '$lib/WordListManager';
 	import { GameSession } from '$lib/GameSession';
+	import { WordList } from '$lib/WordList';
 	import type { WordPair } from '$lib/WordPair';
 
 	let session: GameSession | null = $state(null);
@@ -39,13 +40,26 @@
 		score = session.getScore();
   	}
 
+	function startSession(wordList: WordList) {
+		session = new GameSession(wordList);
+		listName = wordList.name;
+		score = session.getScore();
+		currentWord = undefined;
+		loadNextWord();
+	}
+
+	function retryWrongWords() {
+		if (!session) return;
+		const wrongWords = session.getWrongWords();
+		const retryList = new WordList(listName, selectedListId + '_retry');
+		retryList.addWordPairs(wrongWords);
+		startSession(retryList);
+	}
+
 	onMount(() => {
 		const lists = getWordLists();
 		const selectedList = lists.find((l) => l.id === selectedListId)!;
-		session = new GameSession(selectedList);
-		listName = selectedList.name;
-		score = session.getScore();
-		loadNextWord();
+		startSession(selectedList);
 	});
   </script>
   
@@ -64,11 +78,10 @@
 			<div class="progress-fill" style="width: {((score.correct + score.incorrect) / score.total) * 100}%"></div>
 		</div>
 
-		<div class="word">
-			<h2>Woord: {currentWord?.word || 'Klaar!'}</h2>
-		</div>
-	  
 		{#if currentWord}
+		<div class="word">
+			<h2>Woord: {currentWord.word}</h2>
+		</div>
 		<div class="options">
 			{#each options as option (option)}
 				<button
@@ -92,11 +105,16 @@
 		{/if}
         <button onclick={loadNextWord}>Volgende woord</button>
       {/if}
-    {:else}
-      <h2>Game Over!</h2>
-      <p>Goed: {session.getScore().correct}</p>
-      <p>Fout: {session.getScore().incorrect}</p>
-      <button onclick={() => (location.href = '/')}>Terug naar begin</button>
+		{:else}
+      <div class="game-over">
+        <h2>Klaar!</h2>
+        <p>Goed: {score.correct}</p>
+        <p>Fout: {score.incorrect}</p>
+        {#if score.incorrect > 0}
+          <button onclick={retryWrongWords}>Opnieuw met foute woordjes ({score.incorrect})</button>
+        {/if}
+        <button onclick={() => (location.href = '/')}>Terug naar begin</button>
+      </div>
     {/if}
 	{:else}
 	  <p>Loading...</p>
@@ -151,6 +169,13 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
+	}
+
+	.game-over {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		margin-top: 2rem;
 	}
 
 	button {

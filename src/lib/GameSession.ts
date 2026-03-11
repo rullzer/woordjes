@@ -23,6 +23,7 @@ export class GameSession {
 	private correct: number = 0;
 	private incorrect: number = 0;
 	private total: number;
+	private wrongWords: WordPair[] = [];
 
 	private i = 0;
 
@@ -66,8 +67,15 @@ export class GameSession {
 			return true;
 		} else {
 			this.incorrect++;
+			if (this.currentWord) {
+			this.wrongWords.push(this.currentWord);
+		}
 			return false;
 		}
+	}
+
+	public getWrongWords() {
+		return this.wrongWords;
 	}
 
 	public getScore() {
