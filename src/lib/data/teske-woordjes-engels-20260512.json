@@ -1,0 +1,30 @@
+{
+	"id": "ddda58f7-2e1a-427b-b537-f587207a4039",
+	"name": "Woordjes Teske Engels - 12 Mei",
+	"for": "Teske",
+	"date": "2026-05-12",
+	"labels": {
+		"word": "Engels",
+		"translation": "Nederlands"
+	},
+	"words": [
+		{ "word": "stargazing", "translation": "sterrenkijken" },
+		{ "word": "lion", "translation": "leeuw" },
+		{ "word": "Great Bear", "translation": "Grote Beer" },
+		{ "word": "water snake", "translation": "waterslang" },
+		{ "word": "scorpion", "translation": "schorpioen" },
+		{ "word": "twins", "translation": "tweeling" },
+		{ "word": "swan", "translation": "zwaan" },
+		{ "word": "blanket", "translation": "deken" },
+		{ "word": "torch", "translation": "zaklamp" },
+		{ "word": "lie down", "translation": "liggen" },
+		{ "word": "warm jumper", "translation": "warme trui" },
+		{ "word": "It looks like ...", "translation": "Het ziet eruit als ..." },
+		{ "word": "Let's go stargazing!", "translation": "Laten we gaan sterrenkijken!" },
+		{ "word": "Great idea!", "translation": "Goed idee!" },
+		{ "word": "What do we need?", "translation": "Wat hebben we nodig?" },
+		{ "word": "We need a chair to sit on.", "translation": "We hebben een stoel nodig om op te zitten." },
+		{ "word": "I'll take a star map.", "translation": "Ik neem een sterrenkaart mee." },
+		{ "word": "Let's get ready and then go!", "translation": "Laten we ons klaarmaken en dan gaan!" }
+	]
+}
