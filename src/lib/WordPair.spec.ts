@@ -16,6 +16,34 @@ describe('WordPair', () => {
 		expect(() => new WordPair('hond', '')).toThrow('Word and translation cannot be empty');
 	});
 
+	it('is not extra by default', () => {
+		expect(new WordPair('hond', 'dog').extra).toBe(false);
+	});
+
+	it('can be marked as extra', () => {
+		expect(new WordPair('hond', 'dog', { extra: true }).extra).toBe(true);
+	});
+
+	it('accepts only the translation by default', () => {
+		expect(new WordPair('hond', 'dog').acceptedTranslations).toEqual(['dog']);
+	});
+
+	it('stores accepted translations', () => {
+		const pair = new WordPair('messy', 'slordig, rommelig', {
+			acceptedTranslations: ['slordig', 'rommelig']
+		});
+		expect(pair.acceptedTranslations).toEqual(['slordig', 'rommelig']);
+	});
+
+	it('throws when accepted translations are empty', () => {
+		expect(() => new WordPair('hond', 'dog', { acceptedTranslations: [] })).toThrow(
+			'Accepted translations cannot be empty'
+		);
+		expect(() => new WordPair('hond', 'dog', { acceptedTranslations: [''] })).toThrow(
+			'Accepted translations cannot be empty'
+		);
+	});
+
 	describe('equals', () => {
 		it('returns true for identical pairs', () => {
 			const a = new WordPair('hond', 'dog');
