@@ -3,11 +3,14 @@ export type WordPairOptions = {
 	extra?: boolean;
 	// All answers that count as correct, defaults to just the translation
 	acceptedTranslations?: string[];
+	// Asked the other way around (e.g. Nederlands → Engels instead of Engels → Nederlands)
+	reversed?: boolean;
 };
 
 export class WordPair {
 	public readonly extra: boolean;
 	public readonly acceptedTranslations: string[];
+	public readonly reversed: boolean;
 
 	constructor(
 		public readonly word: string,
@@ -20,6 +23,7 @@ export class WordPair {
 
 		this.extra = options.extra ?? false;
 		this.acceptedTranslations = options.acceptedTranslations ?? [translation];
+		this.reversed = options.reversed ?? false;
 
 		if (this.acceptedTranslations.length === 0 || this.acceptedTranslations.includes('')) {
 			throw new Error('Accepted translations cannot be empty');

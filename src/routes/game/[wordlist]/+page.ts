@@ -1,19 +1,15 @@
-import { getWordLists } from '$lib/WordListManager';
+import { findWordListData } from '$lib/WordListManager';
 
 export const prerender = true;
 
 export async function load({ params }) {
 	const { wordlist } = params;
 
-	// Get all word lists
-	const wordLists = getWordLists();
-	const selectedList = wordLists.find((wl) => wl.id === wordlist);
-
-	if (!selectedList) {
+	if (!findWordListData(wordlist)) {
 		throw new Error(`Word list "${wordlist}" not found`);
 	}
 
 	return {
-		selectedList: selectedList.id
+		selectedList: wordlist
 	};
 }

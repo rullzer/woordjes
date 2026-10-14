@@ -3,7 +3,8 @@
 ## Woordenlijst-formaat
 
 Elke lijst is een JSON-bestand in `src/lib/data/`. Elke lijst verschijnt automatisch
-op het startscherm, één keer zoals hij is en één keer andersom.
+op het startscherm. Na het kiezen van een lijst kies je de richting (heen, terug of door
+elkaar), woordjes of zinnen, en of de extra woordjes meedoen.
 
 ```json
 {
@@ -24,9 +25,9 @@ op het startscherm, één keer zoals hij is en één keer andersom.
 - `word` / `translation`: een tekst, of een lijst met alternatieven die allemaal goed zijn.
   Op het scherm worden alternatieven met een komma getoond.
 - `extra` (optioneel): extra moeilijk woord (blauw in het boek). Hoeft niet geleerd te worden
-  en wordt voorlopig niet overhoord.
-- `sentences` (optioneel): zinnen, hetzelfde formaat als `words`. Komen als aparte lijst
-  ("… zinnen") op het startscherm.
+  en doet alleen mee als je dat aanzet.
+- `sentences` (optioneel): zinnen, hetzelfde formaat als `words`. Te kiezen in het
+  keuzescherm van de lijst.
 
 ## sv
 

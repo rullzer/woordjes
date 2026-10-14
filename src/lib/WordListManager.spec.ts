@@ -1,5 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { getWordLists, toWordLists, type WordListData } from './WordListManager';
+import {
+	countEntries,
+	defaultSettings,
+	findWordListData,
+	getWordListData,
+	toWordList,
+	type PracticeSettings,
+	type WordListData
+} from './WordListManager';
 
 function makeData(overrides: Partial<WordListData> = {}): WordListData {
 	return {
@@ -13,59 +21,109 @@ function makeData(overrides: Partial<WordListData> = {}): WordListData {
 			{ word: 'messy', translation: ['slordig', 'rommelig'] },
 			{ word: 'awkward', translation: 'ongemakkelijk', extra: true }
 		],
+		sentences: [{ word: 'I spilled my drink.', translation: 'Ik morste mijn drinken.' }],
 		...overrides
 	};
 }
 
-describe('toWordLists', () => {
-	it('creates a list and a reversed list', () => {
-		const lists = toWordLists(makeData());
-		expect(lists.map((l) => l.id)).toEqual(['test', 'test_rev']);
-		expect(lists.map((l) => l.name)).toEqual(['Test', 'Test andersom']);
-		expect(lists[1].labels).toEqual({ word: 'Nederlands', translation: 'Engels' });
+function settings(overrides: Partial<PracticeSettings> = {}): PracticeSettings {
+	return { ...defaultSettings, ...overrides };
+}
+
+describe('toWordList', () => {
+	it('asks words forward by default', () => {
+		const list = toWordList(makeData(), defaultSettings);
+		expect(list.id).toBe('test');
+		expect(list.name).toBe('Test');
+		expect(list.labels).toEqual({ word: 'Engels', translation: 'Nederlands' });
+		expect(list.getWordPairs().map((p) => [p.word, p.reversed])).toEqual([
+			['colour', false],
+			['messy', false]
+		]);
 	});
 
-	it('leaves out extra words', () => {
-		const [list, reversed] = toWordLists(makeData());
-		expect(list.getWordPairs().map((p) => p.word)).toEqual(['colour', 'messy']);
-		expect(reversed.getWordPairs().map((p) => p.translation)).toEqual(['colour', 'messy']);
+	it('asks words the other way around', () => {
+		const list = toWordList(makeData(), settings({ direction: 'reverse' }));
+		expect(list.getWordPairs().map((p) => [p.word, p.translation, p.reversed])).toEqual([
+			['kleur', 'colour', true],
+			['slordig, rommelig', 'messy', true]
+		]);
+	});
+
+	it('mixes directions', () => {
+		const values = [0.1, 0.9];
+		const list = toWordList(makeData(), settings({ direction: 'mixed' }), () => values.shift()!);
+		expect(list.getWordPairs().map((p) => [p.word, p.reversed])).toEqual([
+			['kleur', true],
+			['messy', false]
+		]);
+	});
+
+	it('includes extra words when asked', () => {
+		const list = toWordList(makeData(), settings({ includeExtra: true }));
+		const awkward = list.getWordPairs()[2];
+		expect(awkward.word).toBe('awkward');
+		expect(awkward.extra).toBe(true);
 	});
 
 	it('shows alternatives joined and accepts each of them', () => {
-		const [list, reversed] = toWordLists(makeData());
-		const messy = list.getWordPairs()[1];
+		const messy = toWordList(makeData(), defaultSettings).getWordPairs()[1];
 		expect(messy.translation).toBe('slordig, rommelig');
 		expect(messy.acceptedTranslations).toEqual(['slordig', 'rommelig']);
 
-		const reversedMessy = reversed.getWordPairs()[1];
-		expect(reversedMessy.word).toBe('slordig, rommelig');
-		expect(reversedMessy.acceptedTranslations).toEqual(['messy']);
+		const reversed = toWordList(makeData(), settings({ direction: 'reverse' })).getWordPairs()[1];
+		expect(reversed.acceptedTranslations).toEqual(['messy']);
 	});
 
-	it('creates separate lists for sentences', () => {
-		const lists = toWordLists(
-			makeData({
-				sentences: [{ word: 'I spilled my drink.', translation: 'Ik morste mijn drinken.' }]
-			})
-		);
-		expect(lists.map((l) => l.id)).toEqual(['test', 'test_rev', 'test_zinnen', 'test_zinnen_rev']);
-		expect(lists[2].name).toBe('Test zinnen');
-		expect(lists[3].name).toBe('Test zinnen andersom');
-		expect(lists[3].getWordPairs()[0].word).toBe('Ik morste mijn drinken.');
+	it('asks sentences', () => {
+		const list = toWordList(makeData(), settings({ part: 'sentences' }));
+		expect(list.name).toBe('Test zinnen');
+		expect(list.getWordPairs().map((p) => p.word)).toEqual(['I spilled my drink.']);
 	});
 
-	it('skips lists without words', () => {
-		const lists = toWordLists(
-			makeData({ words: [{ word: 'awkward', translation: 'ongemakkelijk', extra: true }] })
-		);
-		expect(lists).toEqual([]);
+	it('returns an empty list when there are no sentences', () => {
+		const list = toWordList(makeData({ sentences: undefined }), settings({ part: 'sentences' }));
+		expect(list.getWordPairs()).toEqual([]);
 	});
 });
 
-describe('getWordLists', () => {
+describe('countEntries', () => {
+	it('counts words, extra words and sentences', () => {
+		expect(countEntries(makeData())).toEqual({
+			words: 2,
+			extraWords: 1,
+			sentences: 1,
+			extraSentences: 0
+		});
+	});
+
+	it('handles missing sentences', () => {
+		expect(countEntries(makeData({ sentences: undefined })).sentences).toBe(0);
+	});
+});
+
+describe('getWordListData', () => {
 	it('loads all data files with unique ids', () => {
-		const ids = getWordLists().map((l) => l.id);
+		const ids = getWordListData().map((data) => data.id);
 		expect(ids.length).toBeGreaterThan(0);
 		expect(new Set(ids).size).toBe(ids.length);
+	});
+
+	it('finds a list by id', () => {
+		const first = getWordListData()[0];
+		expect(findWordListData(first.id)).toBe(first);
+		expect(findWordListData('does-not-exist')).toBeUndefined();
+	});
+
+	it('only contains valid word lists', () => {
+		for (const data of getWordListData()) {
+			for (const part of ['words', 'sentences'] as const) {
+				for (const direction of ['forward', 'reverse'] as const) {
+					expect(() =>
+						toWordList(data, settings({ part, direction, includeExtra: true }))
+					).not.toThrow();
+				}
+			}
+		}
 	});
 });

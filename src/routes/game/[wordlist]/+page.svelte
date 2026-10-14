@@ -4,11 +4,23 @@
 	const { data }: { data: { selectedList: string } } = $props();
 	const selectedListId = data.selectedList;
 
-	import { getWordLists } from '$lib/WordListManager';
+	import {
+		defaultSettings,
+		findWordListData,
+		toWordList,
+		type PracticeSettings,
+		type WordListData
+	} from '$lib/WordListManager';
 	import { GameSession } from '$lib/GameSession';
 	import { WordList } from '$lib/WordList';
 	import type { WordListLabels } from '$lib/WordList';
 	import type { WordPair } from '$lib/WordPair';
+	import Settings from './Settings.svelte';
+
+	const settingsKey = `woordjes-settings-${selectedListId}`;
+
+	let listData: WordListData | undefined = $state(undefined);
+	let settings: PracticeSettings = $state(defaultSettings);
 
 	let session: GameSession | null = $state(null);
 	let currentWord: WordPair | undefined = $state(undefined);
@@ -70,10 +82,41 @@
 		startSession(retryList);
 	}
 
+	function loadSettings(): PracticeSettings {
+		try {
+			const stored = JSON.parse(localStorage.getItem(settingsKey) ?? 'null');
+			if (
+				stored &&
+				['forward', 'reverse', 'mixed'].includes(stored.direction) &&
+				['words', 'sentences'].includes(stored.part) &&
+				typeof stored.includeExtra === 'boolean'
+			) {
+				return stored;
+			}
+		} catch {
+			// No (valid) stored settings, use the defaults
+		}
+		return defaultSettings;
+	}
+
+	function start(newSettings: PracticeSettings) {
+		if (!listData) return;
+		settings = newSettings;
+		try {
+			localStorage.setItem(settingsKey, JSON.stringify(newSettings));
+		} catch {
+			// Not being able to remember the settings is fine
+		}
+		startSession(toWordList(listData, newSettings));
+	}
+
+	function changeSettings() {
+		session = null;
+	}
+
 	onMount(() => {
-		const lists = getWordLists();
-		const selectedList = lists.find((l) => l.id === selectedListId)!;
-		startSession(selectedList);
+		listData = findWordListData(selectedListId);
+		settings = loadSettings();
 	});
 </script>
 
@@ -99,9 +142,18 @@
 
 		{#if currentWord}
 			{#key currentWord.word}
-			<div class="word" class:shake={hasAnswered && !isCorrect} in:fly={{ x: 100, duration: 250 }}>
-				<h2>{currentWord.word}</h2>
-			</div>
+				<div
+					class="word"
+					class:shake={hasAnswered && !isCorrect}
+					in:fly={{ x: 100, duration: 250 }}
+				>
+					<p class="direction">
+						{currentWord.reversed
+							? `${listLabels.translation} → ${listLabels.word}`
+							: `${listLabels.word} → ${listLabels.translation}`}
+					</p>
+					<h2>{currentWord.word}</h2>
+				</div>
 			{/key}
 			<div class="options">
 				{#each options as option (option)}
@@ -156,9 +208,14 @@
 					</div>
 					<button onclick={retryWrongWords}>Opnieuw met foute woordjes ({score.incorrect})</button>
 				{/if}
-				<button onclick={() => (location.href = '/')}>Terug naar begin</button>
+				<button class="secondary" onclick={changeSettings}>Andere instellingen</button>
+				<button class="secondary" onclick={() => (location.href = '/')}>Terug naar begin</button>
 			</div>
 		{/if}
+	{:else if listData}
+		{#key settings}
+			<Settings data={listData} {settings} onstart={start} />
+		{/key}
 	{:else}
 		<p>Loading...</p>
 	{/if}
@@ -257,11 +314,28 @@
 	}
 
 	@keyframes shake {
-		0%, 100% { transform: translateX(0); }
-		20% { transform: translateX(-8px); }
-		40% { transform: translateX(8px); }
-		60% { transform: translateX(-6px); }
-		80% { transform: translateX(6px); }
+		0%,
+		100% {
+			transform: translateX(0);
+		}
+		20% {
+			transform: translateX(-8px);
+		}
+		40% {
+			transform: translateX(8px);
+		}
+		60% {
+			transform: translateX(-6px);
+		}
+		80% {
+			transform: translateX(6px);
+		}
+	}
+
+	.direction {
+		margin: 0 0 0.5rem;
+		font-size: 0.875rem;
+		color: #999;
 	}
 
 	.word h2 {
@@ -371,6 +445,14 @@
 
 	button:hover {
 		background-color: #0056b3;
+	}
+
+	button.secondary {
+		background-color: #6c757d;
+	}
+
+	button.secondary:hover {
+		background-color: #5a6268;
 	}
 
 	button:disabled {

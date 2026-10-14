@@ -54,7 +54,12 @@ export class GameSession {
 
 		const results = [currentExisting.translation];
 
-		const remaining = this.wordList.getWordPairs().filter((pair) => !pair.equals(currentExisting));
+		// Only offer options in the same language as the correct answer
+		const remaining = this.wordList
+			.getWordPairs()
+			.filter(
+				(pair) => !pair.equals(currentExisting) && pair.reversed === currentExisting.reversed
+			);
 		const randomized = shuffleArray(remaining);
 
 		const randomOptions = randomized.slice(0, 4).map((pair) => pair.translation);
