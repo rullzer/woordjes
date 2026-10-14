@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { WordPair } from './WordPair';
+import { normalizeAnswer, WordPair } from './WordPair';
 
 describe('WordPair', () => {
 	it('stores word and translation', () => {
@@ -47,6 +47,45 @@ describe('WordPair', () => {
 		expect(() => new WordPair('hond', 'dog', { acceptedTranslations: [''] })).toThrow(
 			'Accepted translations cannot be empty'
 		);
+	});
+
+	describe('accepts', () => {
+		it('accepts the exact translation', () => {
+			expect(new WordPair('lenen', 'to borrow').accepts('to borrow')).toBe(true);
+		});
+
+		it('ignores capitals, surrounding spaces and a full stop at the end', () => {
+			const pair = new WordPair('lenen', 'to borrow');
+			expect(pair.accepts('  To Borrow.  ')).toBe(true);
+			expect(pair.accepts('TO BORROW!')).toBe(true);
+		});
+
+		it('requires the rest to be exactly right', () => {
+			const pair = new WordPair('lenen', 'to borrow');
+			expect(pair.accepts('borrow')).toBe(false);
+			expect(pair.accepts('to borow')).toBe(false);
+			expect(pair.accepts('')).toBe(false);
+		});
+
+		it('accepts each alternative and the full text', () => {
+			const pair = new WordPair('messy', 'slordig, rommelig', {
+				acceptedTranslations: ['slordig', 'rommelig']
+			});
+			expect(pair.accepts('slordig')).toBe(true);
+			expect(pair.accepts('Rommelig')).toBe(true);
+			expect(pair.accepts('slordig, rommelig')).toBe(true);
+			expect(pair.accepts('netjes')).toBe(false);
+		});
+	});
+
+	describe('normalizeAnswer', () => {
+		it('collapses spaces inside the answer', () => {
+			expect(normalizeAnswer('to   borrow')).toBe('to borrow');
+		});
+
+		it('keeps punctuation inside the answer', () => {
+			expect(normalizeAnswer("Don't.")).toBe("don't");
+		});
 	});
 
 	describe('equals', () => {

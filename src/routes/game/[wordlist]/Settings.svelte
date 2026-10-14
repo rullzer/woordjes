@@ -2,7 +2,7 @@
 	import {
 		countEntries,
 		type Direction,
-		type Part,
+		type Mode,
 		type PracticeSettings,
 		type WordListData
 	} from '$lib/WordListManager';
@@ -21,16 +21,14 @@
 	// svelte-ignore state_referenced_locally
 	let direction: Direction = $state(settings.direction);
 	// svelte-ignore state_referenced_locally
-	let part: Part = $state(settings.part);
+	let mode: Mode = $state(settings.mode);
 	// svelte-ignore state_referenced_locally
 	let includeExtra = $state(settings.includeExtra);
 
 	const counts = $derived(countEntries(data));
 	const hasSentences = $derived(counts.sentences + counts.extraSentences > 0);
-	const extraCount = $derived(part === 'sentences' ? counts.extraSentences : counts.extraWords);
-	const total = $derived(
-		(part === 'sentences' ? counts.sentences : counts.words) + (includeExtra ? extraCount : 0)
-	);
+	const extraCount = $derived(counts.extraWords + counts.extraSentences);
+	const total = $derived(counts.words + counts.sentences + (includeExtra ? extraCount : 0));
 
 	const directions: { value: Direction; label: string }[] = $derived([
 		{ value: 'forward', label: `${data.labels.word} → ${data.labels.translation}` },
@@ -41,20 +39,6 @@
 
 <div class="settings">
 	<h1>{data.name}</h1>
-
-	{#if hasSentences}
-		<fieldset>
-			<legend>Wat wil je oefenen?</legend>
-			<div class="choices">
-				<button class:selected={part === 'words'} onclick={() => (part = 'words')}>
-					Woordjes
-				</button>
-				<button class:selected={part === 'sentences'} onclick={() => (part = 'sentences')}>
-					Zinnen
-				</button>
-			</div>
-		</fieldset>
-	{/if}
 
 	<fieldset>
 		<legend>Welke kant op?</legend>
@@ -68,6 +52,19 @@
 				</button>
 			{/each}
 		</div>
+	</fieldset>
+
+	<fieldset>
+		<legend>Hoe wil je oefenen?</legend>
+		<div class="choices">
+			<button class:selected={mode === 'choice'} onclick={() => (mode = 'choice')}>
+				Meerkeuze
+			</button>
+			<button class:selected={mode === 'typing'} onclick={() => (mode = 'typing')}> Typen </button>
+		</div>
+		{#if hasSentences && mode === 'typing'}
+			<p class="hint">Zinnen blijven meerkeuze.</p>
+		{/if}
 	</fieldset>
 
 	{#if extraCount > 0}
@@ -87,7 +84,7 @@
 	<button
 		class="start"
 		disabled={total === 0}
-		onclick={() => onstart({ direction, part, includeExtra })}
+		onclick={() => onstart({ direction, mode, includeExtra })}
 	>
 		Start ({total})
 	</button>
@@ -118,6 +115,12 @@
 		color: #666;
 		margin-bottom: 0.5rem;
 		padding: 0;
+	}
+
+	.hint {
+		margin: 0.5rem 0 0;
+		font-size: 0.875rem;
+		color: #999;
 	}
 
 	.choices {

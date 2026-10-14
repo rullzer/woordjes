@@ -54,11 +54,15 @@ export class GameSession {
 
 		const results = [currentExisting.translation];
 
-		// Only offer options in the same language as the correct answer
+		// Only offer options of the same kind (word or sentence) and in the same
+		// language as the correct answer
 		const remaining = this.wordList
 			.getWordPairs()
 			.filter(
-				(pair) => !pair.equals(currentExisting) && pair.reversed === currentExisting.reversed
+				(pair) =>
+					!pair.equals(currentExisting) &&
+					pair.reversed === currentExisting.reversed &&
+					pair.sentence === currentExisting.sentence
 			);
 		const randomized = shuffleArray(remaining);
 
@@ -67,7 +71,7 @@ export class GameSession {
 	}
 
 	public answerCurrentWord(answer: string) {
-		if (this.currentWord?.translation === answer) {
+		if (this.currentWord?.accepts(answer)) {
 			this.correct++;
 			return true;
 		} else {

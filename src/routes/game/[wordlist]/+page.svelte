@@ -7,6 +7,7 @@
 	import {
 		defaultSettings,
 		findWordListData,
+		parseSettings,
 		toWordList,
 		type PracticeSettings,
 		type WordListData
@@ -29,6 +30,10 @@
 	let hasAnswered = $state(false);
 	let score = $state({ correct: 0, incorrect: 0, total: 0 });
 	let theAnswer = $state('');
+	let typed = $state('');
+	let input: HTMLInputElement | undefined = $state(undefined);
+	// Sentences are always multiple choice
+	const isTyping = $derived.by(() => settings.mode === 'typing' && currentWord?.sentence === false);
 	let listName = $state('');
 	let listFor = $state('');
 	let listDate = $state('');
@@ -42,6 +47,9 @@
 				options = session.getMultipleChoiceOptions();
 				hasAnswered = false;
 				isCorrect = undefined;
+				typed = '';
+				// Keep the keyboard open between typed words
+				setTimeout(() => input?.focus());
 			} else {
 				currentWord = undefined;
 			}
@@ -55,6 +63,15 @@
 		isCorrect = session.answerCurrentWord(answer);
 		hasAnswered = true;
 		score = session.getScore();
+	}
+
+	function submitTyped(event: SubmitEvent) {
+		event.preventDefault();
+		if (hasAnswered) {
+			loadNextWord();
+		} else if (typed.trim() !== '') {
+			checkAnswer(typed);
+		}
 	}
 
 	function startSession(wordList: WordList) {
@@ -84,15 +101,7 @@
 
 	function loadSettings(): PracticeSettings {
 		try {
-			const stored = JSON.parse(localStorage.getItem(settingsKey) ?? 'null');
-			if (
-				stored &&
-				['forward', 'reverse', 'mixed'].includes(stored.direction) &&
-				['words', 'sentences'].includes(stored.part) &&
-				typeof stored.includeExtra === 'boolean'
-			) {
-				return stored;
-			}
+			return parseSettings(JSON.parse(localStorage.getItem(settingsKey) ?? 'null'));
 		} catch {
 			// No (valid) stored settings, use the defaults
 		}
@@ -155,20 +164,40 @@
 					<h2>{currentWord.word}</h2>
 				</div>
 			{/key}
-			<div class="options">
-				{#each options as option (option)}
-					{#if !hasAnswered || option === currentWord.translation || option === theAnswer}
-						<button
-							class:correct={hasAnswered && option === currentWord.translation}
-							class:incorrect={hasAnswered && !isCorrect && option === theAnswer}
-							onclick={() => checkAnswer(option)}
-							disabled={hasAnswered}
-						>
-							{option}
-						</button>
+			{#if isTyping}
+				<form class="typing" onsubmit={submitTyped}>
+					<input
+						bind:this={input}
+						bind:value={typed}
+						class:correct={hasAnswered && isCorrect}
+						class:incorrect={hasAnswered && !isCorrect}
+						readonly={hasAnswered}
+						placeholder="Typ hier je antwoord"
+						autocomplete="off"
+						autocapitalize="off"
+						spellcheck="false"
+						{...{ autocorrect: 'off' }}
+					/>
+					{#if !hasAnswered}
+						<button type="submit" disabled={typed.trim() === ''}>Controleer</button>
 					{/if}
-				{/each}
-			</div>
+				</form>
+			{:else}
+				<div class="options">
+					{#each options as option (option)}
+						{#if !hasAnswered || option === currentWord.translation || option === theAnswer}
+							<button
+								class:correct={hasAnswered && option === currentWord.translation}
+								class:incorrect={hasAnswered && !isCorrect && option === theAnswer}
+								onclick={() => checkAnswer(option)}
+								disabled={hasAnswered}
+							>
+								{option}
+							</button>
+						{/if}
+					{/each}
+				</div>
+			{/if}
 
 			{#if hasAnswered}
 				<div
@@ -177,8 +206,11 @@
 					class:feedback-incorrect={!isCorrect}
 				>
 					{isCorrect ? 'Goed gedaan! ✓' : 'Helaas... ✗'}
+					{#if isTyping}
+						<p class="solution">{currentWord.translation}</p>
+					{/if}
 				</div>
-				<button class="next-button" onclick={loadNextWord}>Volgende woord →</button>
+				<button class="next-button" onclick={loadNextWord}>Volgende →</button>
 			{/if}
 		{:else}
 			{@const percentage = Math.round((score.correct / score.total) * 100)}
@@ -366,6 +398,43 @@
 	.feedback-incorrect {
 		background-color: #f8d7da;
 		color: #721c24;
+	}
+
+	.typing {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.typing input {
+		font-size: 1.4rem;
+		padding: 1rem;
+		border: 2px solid #ccc;
+		border-radius: 10px;
+		text-align: center;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.typing input:focus {
+		outline: none;
+		border-color: #007bff;
+	}
+
+	.typing input.correct {
+		border-color: #28a745;
+		background-color: #d4edda;
+	}
+
+	.typing input.incorrect {
+		border-color: #dc3545;
+		background-color: #f8d7da;
+		text-decoration: line-through;
+	}
+
+	.solution {
+		margin: 0.5rem 0 0;
+		font-size: 1.4rem;
 	}
 
 	.next-button {
