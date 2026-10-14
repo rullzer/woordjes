@@ -1,0 +1,148 @@
+{
+	"id": "4367ea5e-8a75-452e-9b2d-cbb70f5e7f1b",
+	"name": "Teske Engels - Azizam (Song 2)",
+	"for": "Teske",
+	"date": "2026-10-14",
+	"labels": {
+		"word": "Engels",
+		"translation": "Nederlands"
+	},
+	"words": [
+		{
+			"word": "tomato",
+			"translation": "tomaat"
+		},
+		{
+			"word": "carrot",
+			"translation": "wortel"
+		},
+		{
+			"word": "pepper",
+			"translation": "paprika"
+		},
+		{
+			"word": "lettuce",
+			"translation": "sla"
+		},
+		{
+			"word": "cucumber",
+			"translation": "komkommer"
+		},
+		{
+			"word": "beef",
+			"translation": "rundvlees"
+		},
+		{
+			"word": "chicken",
+			"translation": "kip"
+		},
+		{
+			"word": "cheese",
+			"translation": "kaas"
+		},
+		{
+			"word": "crunchy",
+			"translation": "knapperig"
+		},
+		{
+			"word": "sweet",
+			"translation": "zoet"
+		},
+		{
+			"word": "sour",
+			"translation": "zuur"
+		},
+		{
+			"word": "soft",
+			"translation": "zacht"
+		},
+		{
+			"word": "hard",
+			"translation": "hard"
+		},
+		{
+			"word": "creamy",
+			"translation": "romig"
+		},
+		{
+			"word": "spicy",
+			"translation": "pittig"
+		},
+		{
+			"word": "greasy",
+			"translation": "vettig",
+			"extra": true
+		},
+		{
+			"word": "smelly",
+			"translation": "stinkend",
+			"extra": true
+		},
+		{
+			"word": "meatballs",
+			"translation": "gehaktballetjes"
+		},
+		{
+			"word": "mashed potatoes",
+			"translation": "aardappelpuree"
+		},
+		{
+			"word": "boil",
+			"translation": "koken",
+			"extra": true
+		},
+		{
+			"word": "bake",
+			"translation": "bakken",
+			"extra": true
+		},
+		{
+			"word": "cut",
+			"translation": "snijden",
+			"extra": true
+		},
+		{
+			"word": "piece",
+			"translation": "stukje",
+			"extra": true
+		}
+	],
+	"sentences": [
+		{
+			"word": "You can fill tacos with beef or chicken.",
+			"translation": "Je kunt taco's vullen met rundvlees of kip."
+		},
+		{
+			"word": "Most pizzas have a crunchy crust.",
+			"translation": "De meeste pizza's hebben een knapperige korst."
+		},
+		{
+			"word": "To make pancakes you need milk, butter and flour.",
+			"translation": "Om pannenkoeken te maken heb je melk, boter en meel nodig."
+		},
+		{
+			"word": "This green salad has lettuce, cucumber and a lemon dressing.",
+			"translation": "In deze groene salade zit sla, komkommer en een dressing met citroen."
+		},
+		{
+			"word": "You can eat it with your hands.",
+			"translation": "Je kunt het met je handen eten."
+		},
+		{
+			"word": "It tastes delicious.",
+			"translation": "Het smaakt heerlijk."
+		},
+		{
+			"word": "It is very healthy.",
+			"translation": "Het is heel gezond."
+		},
+		{
+			"word": "Everyone likes it.",
+			"translation": "Iedereen vindt het lekker."
+		},
+		{
+			"word": "You can eat it with different vegetables.",
+			"translation": "Je kunt het met verschillende groenten eten."
+		}
+	]
+}
