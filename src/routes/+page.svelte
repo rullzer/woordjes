@@ -1,6 +1,20 @@
 <script lang="ts">
-	const { data }: { data: { wordLists: { name: string; id: string; count: number }[] } } = $props();
+	type ListSummary = {
+		name: string;
+		id: string;
+		words: number;
+		extraWords: number;
+		sentences: number;
+	};
+	const { data }: { data: { wordLists: ListSummary[] } } = $props();
 	const wordLists = data.wordLists;
+
+	function describe(list: ListSummary) {
+		const parts = [`${list.words} woorden`];
+		if (list.extraWords > 0) parts.push(`${list.extraWords} extra`);
+		if (list.sentences > 0) parts.push(`${list.sentences} zinnen`);
+		return parts;
+	}
 </script>
 
 <main>
@@ -12,7 +26,11 @@
 		{#each wordLists as list}
 			<a href="/game/{list.id}" class="word-list-card">
 				<span class="list-name">{list.name}</span>
-				<span class="list-count">{list.count} woorden</span>
+				<span class="list-count">
+					{#each describe(list) as part (part)}
+						<span>{part}</span>
+					{/each}
+				</span>
 			</a>
 		{/each}
 	</div>
@@ -53,6 +71,7 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		gap: 1rem;
 		padding: 1.25rem 1.5rem;
 		background-color: #f8f9fa;
 		border-radius: 12px;
@@ -78,5 +97,9 @@
 	.list-count {
 		font-size: 0.875rem;
 		color: #999;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		white-space: nowrap;
 	}
 </style>

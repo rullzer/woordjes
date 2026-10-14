@@ -21,6 +21,21 @@ export type WordListData = {
 	sentences?: WordEntry[];
 };
 
+export type Direction = 'forward' | 'reverse' | 'mixed';
+export type Part = 'words' | 'sentences';
+
+export type PracticeSettings = {
+	direction: Direction;
+	part: Part;
+	includeExtra: boolean;
+};
+
+export const defaultSettings: PracticeSettings = {
+	direction: 'forward',
+	part: 'words',
+	includeExtra: false
+};
+
 const files = import.meta.glob('./data/*.json', { eager: true, import: 'default' }) as Record<
 	string,
 	WordListData
@@ -34,57 +49,57 @@ function display(text: Text): string {
 	return alternatives(text).join(', ');
 }
 
-function toWordPair(entry: WordEntry, reverse: boolean): WordPair {
-	const from = reverse ? entry.translation : entry.word;
-	const to = reverse ? entry.word : entry.translation;
+function toWordPair(entry: WordEntry, reversed: boolean): WordPair {
+	const from = reversed ? entry.translation : entry.word;
+	const to = reversed ? entry.word : entry.translation;
 	return new WordPair(display(from), display(to), {
 		extra: entry.extra ?? false,
-		acceptedTranslations: alternatives(to)
+		acceptedTranslations: alternatives(to),
+		reversed
 	});
 }
 
-function toList(
+export function countEntries(data: WordListData) {
+	const sentences = data.sentences ?? [];
+	return {
+		words: data.words.filter((entry) => !entry.extra).length,
+		extraWords: data.words.filter((entry) => entry.extra).length,
+		sentences: sentences.filter((entry) => !entry.extra).length,
+		extraSentences: sentences.filter((entry) => entry.extra).length
+	};
+}
+
+export function toWordList(
 	data: WordListData,
-	entries: WordEntry[],
-	name: string,
-	id: string,
-	reverse: boolean
+	settings: PracticeSettings,
+	random: () => number = Math.random
 ): WordList {
-	const labels = reverse
-		? { word: data.labels.translation, translation: data.labels.word }
-		: data.labels;
+	const isSentences = settings.part === 'sentences';
 	const wordList = new WordList(
-		reverse ? name + ' andersom' : name,
-		reverse ? id + '_rev' : id,
+		isSentences ? data.name + ' zinnen' : data.name,
+		data.id,
 		data.for,
 		data.date,
-		labels
+		data.labels
 	);
-	// Extra (blue) words are not required, so they are left out for now
+
+	const entries = (isSentences ? (data.sentences ?? []) : data.words).filter(
+		(entry) => settings.includeExtra || !entry.extra
+	);
 	wordList.addWordPairs(
-		entries.filter((entry) => !entry.extra).map((entry) => toWordPair(entry, reverse))
+		entries.map((entry) => {
+			const reversed =
+				settings.direction === 'mixed' ? random() < 0.5 : settings.direction === 'reverse';
+			return toWordPair(entry, reversed);
+		})
 	);
 	return wordList;
 }
 
-export function toWordLists(data: WordListData): WordList[] {
-	const lists = [
-		toList(data, data.words, data.name, data.id, false),
-		toList(data, data.words, data.name, data.id, true)
-	];
-
-	if (data.sentences && data.sentences.length > 0) {
-		const name = data.name + ' zinnen';
-		const id = data.id + '_zinnen';
-		lists.push(
-			toList(data, data.sentences, name, id, false),
-			toList(data, data.sentences, name, id, true)
-		);
-	}
-
-	return lists.filter((list) => list.getWordPairs().length > 0);
+export function getWordListData(): WordListData[] {
+	return Object.values(files).sort((a, b) => b.date.localeCompare(a.date));
 }
 
-export function getWordLists(): WordList[] {
-	return Object.values(files).flatMap(toWordLists);
+export function findWordListData(id: string): WordListData | undefined {
+	return getWordListData().find((data) => data.id === id);
 }

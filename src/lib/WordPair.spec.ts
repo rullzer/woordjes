@@ -35,6 +35,11 @@ describe('WordPair', () => {
 		expect(pair.acceptedTranslations).toEqual(['slordig', 'rommelig']);
 	});
 
+	it('is not reversed by default', () => {
+		expect(new WordPair('hond', 'dog').reversed).toBe(false);
+		expect(new WordPair('dog', 'hond', { reversed: true }).reversed).toBe(true);
+	});
+
 	it('throws when accepted translations are empty', () => {
 		expect(() => new WordPair('hond', 'dog', { acceptedTranslations: [] })).toThrow(
 			'Accepted translations cannot be empty'

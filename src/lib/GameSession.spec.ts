@@ -76,6 +76,26 @@ describe('GameSession', () => {
 			expect(session.getMultipleChoiceOptions().length).toBeLessThanOrEqual(5);
 		});
 
+		it('only offers options in the same direction as the current word', () => {
+			const list = new WordList('Test', 'test', 'Test', '2026-01-01', {
+				word: 'Nederlands',
+				translation: 'Engels'
+			});
+			list.addWordPairs([
+				new WordPair('hond', 'dog'),
+				new WordPair('kat', 'cat'),
+				new WordPair('fish', 'vis', { reversed: true }),
+				new WordPair('bird', 'vogel', { reversed: true })
+			]);
+			const session = new GameSession(list);
+			let word = session.getNextWord();
+			while (word !== null) {
+				const expected = word.reversed ? ['vis', 'vogel'] : ['dog', 'cat'];
+				expect(session.getMultipleChoiceOptions().sort()).toEqual(expected.sort());
+				word = session.getNextWord();
+			}
+		});
+
 		it('returns only the correct answer when word list has one word', () => {
 			const list = makeWordList([['hond', 'dog']]);
 			const session = new GameSession(list);
