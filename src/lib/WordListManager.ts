@@ -11,6 +11,20 @@ type WordEntry = {
 	extra?: boolean;
 };
 
+type GrammarQuestion = {
+	// Sentence with ___ where the answer goes
+	sentence: string;
+	hint?: string;
+	answer: string;
+	options: string[];
+};
+
+type GrammarRule = {
+	title: string;
+	rule: string;
+	questions: GrammarQuestion[];
+};
+
 export type WordListData = {
 	id: string;
 	name: string;
@@ -19,6 +33,7 @@ export type WordListData = {
 	labels: { word: string; translation: string };
 	words: WordEntry[];
 	sentences?: WordEntry[];
+	grammar?: GrammarRule[];
 };
 
 export type Direction = 'forward' | 'reverse' | 'mixed';
@@ -86,6 +101,7 @@ export function countEntries(data: WordListData) {
 		words: data.words.filter((entry) => !entry.extra).length,
 		extraWords: data.words.filter((entry) => entry.extra).length,
 		sentences: sentences.filter((entry) => !entry.extra).length,
+		grammar: (data.grammar ?? []).reduce((count, rule) => count + rule.questions.length, 0),
 		extraSentences: sentences.filter((entry) => entry.extra).length
 	};
 }
@@ -108,6 +124,19 @@ export function toWordList(
 
 	wordList.addWordPairs(toPairs(data.words, false));
 	wordList.addWordPairs(toPairs(data.sentences ?? [], true));
+	wordList.addWordPairs(
+		(data.grammar ?? []).flatMap((rule) =>
+			rule.questions.map(
+				(question) =>
+					new WordPair(question.sentence, question.answer, {
+						options: question.options,
+						label: `Grammatica: ${rule.title}`,
+						hint: question.hint,
+						explanation: rule.rule
+					})
+			)
+		)
+	);
 	return wordList;
 }
 

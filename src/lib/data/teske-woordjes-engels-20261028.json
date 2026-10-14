@@ -144,5 +144,67 @@
 			"word": "You can eat it with different vegetables.",
 			"translation": "Je kunt het met verschillende groenten eten."
 		}
+	],
+	"grammar": [
+		{
+			"title": "It is / They are",
+			"rule": "Gaat het over 1 ding? Dan gebruik je it is. Gaat het over meer dingen? Dan gebruik je they are.",
+			"questions": [
+				{
+					"sentence": "___ red and a bit sour.",
+					"hint": "Het is rood en een beetje zuur.",
+					"answer": "It is",
+					"options": ["It is", "It is not", "They are", "They are not"]
+				},
+				{
+					"sentence": "___ hard.",
+					"hint": "Het is niet hard.",
+					"answer": "It is not",
+					"options": ["It is", "It is not", "They are", "They are not"]
+				},
+				{
+					"sentence": "___ orange and crunchy.",
+					"hint": "Ze zijn oranje en knapperig.",
+					"answer": "They are",
+					"options": ["It is", "It is not", "They are", "They are not"]
+				},
+				{
+					"sentence": "___ sour.",
+					"hint": "Ze zijn niet zuur.",
+					"answer": "They are not",
+					"options": ["It is", "It is not", "They are", "They are not"]
+				}
+			]
+		},
+		{
+			"title": "Korter schrijven",
+			"rule": "It is → It's, It is not → It's not, They are → They're, They are not → They're not.",
+			"questions": [
+				{
+					"sentence": "___ red and a bit sour.",
+					"hint": "Korter voor: It is red and a bit sour.",
+					"answer": "It's",
+					"options": ["It's", "It's not", "They're", "They're not"]
+				},
+				{
+					"sentence": "___ hard.",
+					"hint": "Korter voor: It is not hard.",
+					"answer": "It's not",
+					"options": ["It's", "It's not", "They're", "They're not"]
+				},
+				{
+					"sentence": "___ orange and crunchy.",
+					"hint": "Korter voor: They are orange and crunchy.",
+					"answer": "They're",
+					"options": ["It's", "It's not", "They're", "They're not"]
+				},
+				{
+					"sentence": "___ sour.",
+					"hint": "Korter voor: They are not sour.",
+					"answer": "They're not",
+					"options": ["It's", "It's not", "They're", "They're not"]
+				}
+			]
+		}
 	]
 }

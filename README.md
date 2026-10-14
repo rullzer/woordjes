@@ -21,7 +21,21 @@ aan het eind niet mee. De rest moet precies kloppen.
 		{ "word": "messy", "translation": ["slordig", "rommelig"] },
 		{ "word": "awkward", "translation": "ongemakkelijk", "extra": true }
 	],
-	"sentences": [{ "word": "I spilled my drink.", "translation": "Ik morste mijn drinken." }]
+	"sentences": [{ "word": "I spilled my drink.", "translation": "Ik morste mijn drinken." }],
+	"grammar": [
+		{
+			"title": "It is / They are",
+			"rule": "Gaat het over 1 ding? Dan gebruik je it is. Gaat het over meer dingen? Dan gebruik je they are.",
+			"questions": [
+				{
+					"sentence": "___ orange and crunchy.",
+					"hint": "Ze zijn oranje en knapperig.",
+					"answer": "They are",
+					"options": ["It is", "They are"]
+				}
+			]
+		}
+	]
 }
 ```
 
@@ -31,6 +45,10 @@ aan het eind niet mee. De rest moet precies kloppen.
   en doet alleen mee als je dat aanzet.
 - `sentences` (optioneel): zinnen, hetzelfde formaat als `words`. Die worden tussen de
   woordjes door gevraagd en zijn altijd meerkeuze, ook als je voor typen kiest.
+- `grammar` (optioneel): grammaticaregels met invulvragen. Elke vraag is een zin met `___`
+  waar het antwoord moet komen, met vaste keuzes in `options` (daar moet `answer` tussen
+  staan). `hint` staat onder de vraag, `rule` verschijnt na een fout antwoord. Ook deze vragen
+  komen tussen de woordjes door en zijn altijd meerkeuze.
 
 ## sv
 

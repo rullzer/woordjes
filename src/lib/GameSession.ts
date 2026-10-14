@@ -52,6 +52,10 @@ export class GameSession {
 
 		const currentExisting = this.currentWord;
 
+		if (currentExisting.options) {
+			return shuffleArray(currentExisting.options);
+		}
+
 		const results = [currentExisting.translation];
 
 		// Only offer options of the same kind (word or sentence) and in the same
@@ -61,6 +65,7 @@ export class GameSession {
 			.filter(
 				(pair) =>
 					!pair.equals(currentExisting) &&
+					pair.options === undefined &&
 					pair.reversed === currentExisting.reversed &&
 					pair.sentence === currentExisting.sentence
 			);

@@ -49,6 +49,18 @@ describe('WordPair', () => {
 		);
 	});
 
+	it('throws when the options do not include the translation', () => {
+		expect(
+			() => new WordPair('___ sour.', 'They are', { options: ['It is', 'It is not'] })
+		).toThrow('Options must include the translation');
+	});
+
+	it('is always multiple choice for sentences and grammar', () => {
+		expect(new WordPair('hond', 'dog').alwaysMultipleChoice).toBe(false);
+		expect(new WordPair('a', 'b', { sentence: true }).alwaysMultipleChoice).toBe(true);
+		expect(new WordPair('a', 'b', { options: ['b', 'c'] }).alwaysMultipleChoice).toBe(true);
+	});
+
 	describe('accepts', () => {
 		it('accepts the exact translation', () => {
 			expect(new WordPair('lenen', 'to borrow').accepts('to borrow')).toBe(true);

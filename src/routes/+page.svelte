@@ -5,6 +5,7 @@
 		words: number;
 		extraWords: number;
 		sentences: number;
+		grammar: number;
 	};
 	const { data }: { data: { wordLists: ListSummary[] } } = $props();
 	const wordLists = data.wordLists;
@@ -13,6 +14,7 @@
 		const parts = [`${list.words} woorden`];
 		if (list.extraWords > 0) parts.push(`${list.extraWords} extra`);
 		if (list.sentences > 0) parts.push(`${list.sentences} zinnen`);
+		if (list.grammar > 0) parts.push(`${list.grammar} grammatica`);
 		return parts;
 	}
 </script>

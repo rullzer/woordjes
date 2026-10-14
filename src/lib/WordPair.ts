@@ -17,6 +17,14 @@ export type WordPairOptions = {
 	reversed?: boolean;
 	// A sentence instead of a word, always asked as multiple choice
 	sentence?: boolean;
+	// Fixed multiple choice options (grammar), instead of other words from the list
+	options?: string[];
+	// Shown above the question instead of the direction, e.g. the grammar topic
+	label?: string;
+	// Extra help shown below the question, e.g. the Dutch meaning
+	hint?: string;
+	// Shown after a wrong answer, e.g. the grammar rule
+	explanation?: string;
 };
 
 export class WordPair {
@@ -24,6 +32,10 @@ export class WordPair {
 	public readonly acceptedTranslations: string[];
 	public readonly reversed: boolean;
 	public readonly sentence: boolean;
+	public readonly options?: string[];
+	public readonly label?: string;
+	public readonly hint?: string;
+	public readonly explanation?: string;
 
 	constructor(
 		public readonly word: string,
@@ -38,10 +50,23 @@ export class WordPair {
 		this.acceptedTranslations = options.acceptedTranslations ?? [translation];
 		this.reversed = options.reversed ?? false;
 		this.sentence = options.sentence ?? false;
+		this.options = options.options;
+		this.label = options.label;
+		this.hint = options.hint;
+		this.explanation = options.explanation;
+
+		if (this.options && !this.options.includes(translation)) {
+			throw new Error('Options must include the translation');
+		}
 
 		if (this.acceptedTranslations.length === 0 || this.acceptedTranslations.includes('')) {
 			throw new Error('Accepted translations cannot be empty');
 		}
+	}
+
+	// Sentences and grammar questions are never typed
+	public get alwaysMultipleChoice() {
+		return this.sentence || this.options !== undefined;
 	}
 
 	public accepts(answer: string) {

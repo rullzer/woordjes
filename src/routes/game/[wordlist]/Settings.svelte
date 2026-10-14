@@ -27,8 +27,11 @@
 
 	const counts = $derived(countEntries(data));
 	const hasSentences = $derived(counts.sentences + counts.extraSentences > 0);
+	const hasGrammar = $derived(counts.grammar > 0);
 	const extraCount = $derived(counts.extraWords + counts.extraSentences);
-	const total = $derived(counts.words + counts.sentences + (includeExtra ? extraCount : 0));
+	const total = $derived(
+		counts.words + counts.sentences + counts.grammar + (includeExtra ? extraCount : 0)
+	);
 
 	const directions: { value: Direction; label: string }[] = $derived([
 		{ value: 'forward', label: `${data.labels.word} → ${data.labels.translation}` },
@@ -62,8 +65,14 @@
 			</button>
 			<button class:selected={mode === 'typing'} onclick={() => (mode = 'typing')}> Typen </button>
 		</div>
-		{#if hasSentences && mode === 'typing'}
-			<p class="hint">Zinnen blijven meerkeuze.</p>
+		{#if (hasSentences || hasGrammar) && mode === 'typing'}
+			<p class="hint">
+				{hasSentences && hasGrammar
+					? 'Zinnen en grammatica blijven meerkeuze.'
+					: hasGrammar
+						? 'Grammatica blijft meerkeuze.'
+						: 'Zinnen blijven meerkeuze.'}
+			</p>
 		{/if}
 	</fieldset>
 
