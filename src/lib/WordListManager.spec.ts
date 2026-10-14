@@ -98,6 +98,47 @@ describe('toWordList', () => {
 	});
 });
 
+describe('grammar', () => {
+	const grammar = [
+		{
+			title: 'It is / They are',
+			rule: 'Gaat het over 1 ding? Dan gebruik je it is.',
+			questions: [
+				{
+					sentence: '___ sour.',
+					hint: 'Ze zijn niet zuur.',
+					answer: 'They are not',
+					options: ['It is', 'They are not']
+				}
+			]
+		}
+	];
+
+	it('adds grammar questions after the words and sentences', () => {
+		const pairs = toWordList(makeData({ grammar }), defaultSettings).getWordPairs();
+		const question = pairs[pairs.length - 1];
+		expect(question.word).toBe('___ sour.');
+		expect(question.translation).toBe('They are not');
+		expect(question.options).toEqual(['It is', 'They are not']);
+		expect(question.label).toBe('Grammatica: It is / They are');
+		expect(question.hint).toBe('Ze zijn niet zuur.');
+		expect(question.explanation).toBe('Gaat het over 1 ding? Dan gebruik je it is.');
+	});
+
+	it('never reverses grammar questions', () => {
+		const pairs = toWordList(
+			makeData({ grammar }),
+			settings({ direction: 'reverse' })
+		).getWordPairs();
+		expect(pairs[pairs.length - 1].reversed).toBe(false);
+		expect(pairs[pairs.length - 1].word).toBe('___ sour.');
+	});
+
+	it('counts grammar questions', () => {
+		expect(countEntries(makeData({ grammar })).grammar).toBe(1);
+	});
+});
+
 describe('parseSettings', () => {
 	it('keeps valid settings', () => {
 		const valid = { direction: 'mixed', mode: 'typing', includeExtra: true };
@@ -120,6 +161,7 @@ describe('countEntries', () => {
 			words: 2,
 			extraWords: 1,
 			sentences: 1,
+			grammar: 0,
 			extraSentences: 0
 		});
 	});

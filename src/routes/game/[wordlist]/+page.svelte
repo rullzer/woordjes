@@ -33,7 +33,9 @@
 	let typed = $state('');
 	let input: HTMLInputElement | undefined = $state(undefined);
 	// Sentences are always multiple choice
-	const isTyping = $derived.by(() => settings.mode === 'typing' && currentWord?.sentence === false);
+	const isTyping = $derived.by(
+		() => settings.mode === 'typing' && currentWord?.alwaysMultipleChoice === false
+	);
 	let listName = $state('');
 	let listFor = $state('');
 	let listDate = $state('');
@@ -150,18 +152,22 @@
 		</div>
 
 		{#if currentWord}
-			{#key currentWord.word}
+			{#key currentWord}
 				<div
 					class="word"
 					class:shake={hasAnswered && !isCorrect}
 					in:fly={{ x: 100, duration: 250 }}
 				>
 					<p class="direction">
-						{currentWord.reversed
-							? `${listLabels.translation} → ${listLabels.word}`
-							: `${listLabels.word} → ${listLabels.translation}`}
+						{currentWord.label ??
+							(currentWord.reversed
+								? `${listLabels.translation} → ${listLabels.word}`
+								: `${listLabels.word} → ${listLabels.translation}`)}
 					</p>
 					<h2>{currentWord.word}</h2>
+					{#if currentWord.hint}
+						<p class="hint">{currentWord.hint}</p>
+					{/if}
 				</div>
 			{/key}
 			{#if isTyping}
@@ -208,6 +214,9 @@
 					{isCorrect ? 'Goed gedaan! ✓' : 'Helaas... ✗'}
 					{#if isTyping}
 						<p class="solution">{currentWord.translation}</p>
+					{/if}
+					{#if !isCorrect && currentWord.explanation}
+						<p class="explanation">{currentWord.explanation}</p>
 					{/if}
 				</div>
 				<button class="next-button" onclick={loadNextWord}>Volgende →</button>
@@ -430,6 +439,18 @@
 		border-color: #dc3545;
 		background-color: #f8d7da;
 		text-decoration: line-through;
+	}
+
+	.hint {
+		margin: 0.75rem 0 0;
+		font-style: italic;
+		color: #666;
+	}
+
+	.explanation {
+		margin: 0.5rem 0 0;
+		font-weight: normal;
+		font-size: 1rem;
 	}
 
 	.solution {
