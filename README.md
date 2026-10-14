@@ -4,7 +4,10 @@
 
 Elke lijst is een JSON-bestand in `src/lib/data/`. Elke lijst verschijnt automatisch
 op het startscherm. Na het kiezen van een lijst kies je de richting (heen, terug of door
-elkaar), woordjes of zinnen, en of de extra woordjes meedoen.
+elkaar), meerkeuze of typen, en of de extra woordjes meedoen.
+
+Bij typen tellen hoofdletters, spaties voor of na het antwoord en een punt (of `!`/`?`)
+aan het eind niet mee. De rest moet precies kloppen.
 
 ```json
 {
@@ -26,8 +29,8 @@ elkaar), woordjes of zinnen, en of de extra woordjes meedoen.
   Op het scherm worden alternatieven met een komma getoond.
 - `extra` (optioneel): extra moeilijk woord (blauw in het boek). Hoeft niet geleerd te worden
   en doet alleen mee als je dat aanzet.
-- `sentences` (optioneel): zinnen, hetzelfde formaat als `words`. Te kiezen in het
-  keuzescherm van de lijst.
+- `sentences` (optioneel): zinnen, hetzelfde formaat als `words`. Die worden tussen de
+  woordjes door gevraagd en zijn altijd meerkeuze, ook als je voor typen kiest.
 
 ## sv
 

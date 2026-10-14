@@ -96,6 +96,26 @@ describe('GameSession', () => {
 			}
 		});
 
+		it('only offers sentences for a sentence and words for a word', () => {
+			const list = new WordList('Test', 'test', 'Test', '2026-01-01', {
+				word: 'Engels',
+				translation: 'Nederlands'
+			});
+			list.addWordPairs([
+				new WordPair('dog', 'hond'),
+				new WordPair('cat', 'kat'),
+				new WordPair('I have a dog.', 'Ik heb een hond.', { sentence: true }),
+				new WordPair('I have a cat.', 'Ik heb een kat.', { sentence: true })
+			]);
+			const session = new GameSession(list);
+			let word = session.getNextWord();
+			while (word !== null) {
+				const expected = word.sentence ? ['Ik heb een hond.', 'Ik heb een kat.'] : ['hond', 'kat'];
+				expect(session.getMultipleChoiceOptions().sort()).toEqual(expected.sort());
+				word = session.getNextWord();
+			}
+		});
+
 		it('returns only the correct answer when word list has one word', () => {
 			const list = makeWordList([['hond', 'dog']]);
 			const session = new GameSession(list);
@@ -110,6 +130,13 @@ describe('GameSession', () => {
 			const session = new GameSession(list);
 			session.getNextWord();
 			expect(session.answerCurrentWord('dog')).toBe(true);
+		});
+
+		it('accepts a typed answer with different capitals and a full stop', () => {
+			const list = makeWordList([['hond', 'dog']]);
+			const session = new GameSession(list);
+			session.getNextWord();
+			expect(session.answerCurrentWord(' Dog. ')).toBe(true);
 		});
 
 		it('returns false for wrong answer', () => {

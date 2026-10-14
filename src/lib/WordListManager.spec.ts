@@ -4,6 +4,7 @@ import {
 	defaultSettings,
 	findWordListData,
 	getWordListData,
+	parseSettings,
 	toWordList,
 	type PracticeSettings,
 	type WordListData
@@ -31,19 +32,20 @@ function settings(overrides: Partial<PracticeSettings> = {}): PracticeSettings {
 }
 
 describe('toWordList', () => {
-	it('asks words forward by default', () => {
+	it('asks words and sentences forward by default', () => {
 		const list = toWordList(makeData(), defaultSettings);
 		expect(list.id).toBe('test');
 		expect(list.name).toBe('Test');
 		expect(list.labels).toEqual({ word: 'Engels', translation: 'Nederlands' });
-		expect(list.getWordPairs().map((p) => [p.word, p.reversed])).toEqual([
-			['colour', false],
-			['messy', false]
+		expect(list.getWordPairs().map((p) => [p.word, p.reversed, p.sentence])).toEqual([
+			['colour', false, false],
+			['messy', false, false],
+			['I spilled my drink.', false, true]
 		]);
 	});
 
 	it('asks words the other way around', () => {
-		const list = toWordList(makeData(), settings({ direction: 'reverse' }));
+		const list = toWordList(makeData({ sentences: undefined }), settings({ direction: 'reverse' }));
 		expect(list.getWordPairs().map((p) => [p.word, p.translation, p.reversed])).toEqual([
 			['kleur', 'colour', true],
 			['slordig, rommelig', 'messy', true]
@@ -52,7 +54,11 @@ describe('toWordList', () => {
 
 	it('mixes directions', () => {
 		const values = [0.1, 0.9];
-		const list = toWordList(makeData(), settings({ direction: 'mixed' }), () => values.shift()!);
+		const list = toWordList(
+			makeData({ sentences: undefined }),
+			settings({ direction: 'mixed' }),
+			() => values.shift()!
+		);
 		expect(list.getWordPairs().map((p) => [p.word, p.reversed])).toEqual([
 			['kleur', true],
 			['messy', false]
@@ -75,15 +81,36 @@ describe('toWordList', () => {
 		expect(reversed.acceptedTranslations).toEqual(['messy']);
 	});
 
-	it('asks sentences', () => {
-		const list = toWordList(makeData(), settings({ part: 'sentences' }));
-		expect(list.name).toBe('Test zinnen');
-		expect(list.getWordPairs().map((p) => p.word)).toEqual(['I spilled my drink.']);
+	it('leaves out extra sentences unless asked', () => {
+		const data = makeData({
+			sentences: [{ word: 'It was awkward.', translation: 'Het was ongemakkelijk.', extra: true }]
+		});
+		expect(
+			toWordList(data, defaultSettings)
+				.getWordPairs()
+				.some((p) => p.sentence)
+		).toBe(false);
+		expect(
+			toWordList(data, settings({ includeExtra: true }))
+				.getWordPairs()
+				.some((p) => p.sentence)
+		).toBe(true);
+	});
+});
+
+describe('parseSettings', () => {
+	it('keeps valid settings', () => {
+		const valid = { direction: 'mixed', mode: 'typing', includeExtra: true };
+		expect(parseSettings(valid)).toEqual(valid);
 	});
 
-	it('returns an empty list when there are no sentences', () => {
-		const list = toWordList(makeData({ sentences: undefined }), settings({ part: 'sentences' }));
-		expect(list.getWordPairs()).toEqual([]);
+	it('falls back to defaults for missing or invalid values', () => {
+		expect(parseSettings(null)).toEqual(defaultSettings);
+		expect(parseSettings('nonsense')).toEqual(defaultSettings);
+		expect(parseSettings({ direction: 'reverse', part: 'words', includeExtra: 'yes' })).toEqual({
+			...defaultSettings,
+			direction: 'reverse'
+		});
 	});
 });
 
@@ -117,12 +144,8 @@ describe('getWordListData', () => {
 
 	it('only contains valid word lists', () => {
 		for (const data of getWordListData()) {
-			for (const part of ['words', 'sentences'] as const) {
-				for (const direction of ['forward', 'reverse'] as const) {
-					expect(() =>
-						toWordList(data, settings({ part, direction, includeExtra: true }))
-					).not.toThrow();
-				}
+			for (const direction of ['forward', 'reverse'] as const) {
+				expect(() => toWordList(data, settings({ direction, includeExtra: true }))).not.toThrow();
 			}
 		}
 	});
