@@ -1,0 +1,164 @@
+{
+	"id": "36358935-023f-4a80-9570-eb4ea977da65",
+	"name": "Teske Engels - Forever young (Song 3)",
+	"for": "Teske",
+	"date": "2026-11-23",
+	"labels": {
+		"word": "Engels",
+		"translation": "Nederlands"
+	},
+	"words": [
+		{
+			"word": "forever",
+			"translation": "voor altijd"
+		},
+		{
+			"word": "young",
+			"translation": "jong"
+		},
+		{
+			"word": "old",
+			"translation": "oud"
+		},
+		{
+			"word": "healthier",
+			"translation": "gezonder"
+		},
+		{
+			"word": "fitter",
+			"translation": "fitter"
+		},
+		{
+			"word": "fear",
+			"translation": "angst"
+		},
+		{
+			"word": "job",
+			"translation": "baan"
+		},
+		{
+			"word": "drive a car",
+			"translation": "autorijden"
+		},
+		{
+			"word": "time to play",
+			"translation": "tijd om te spelen"
+		},
+		{
+			"word": "do nothing",
+			"translation": "niets doen"
+		},
+		{
+			"word": "change",
+			"translation": "veranderen",
+			"extra": true
+		},
+		{
+			"word": "fizzy drink",
+			"translation": "frisdrank",
+			"extra": true
+		},
+		{
+			"word": "look forward to",
+			"translation": "uitkijken naar",
+			"extra": true
+		},
+		{
+			"word": "decide",
+			"translation": "besluiten",
+			"extra": true
+		},
+		{
+			"word": "chore",
+			"translation": "klusje",
+			"extra": true
+		},
+		{
+			"word": "stay up late",
+			"translation": "laat opblijven",
+			"extra": true
+		},
+		{
+			"word": "go on holiday alone",
+			"translation": "alleen op vakantie gaan"
+		},
+		{
+			"word": "listen to your parents",
+			"translation": "naar je ouders luisteren"
+		},
+		{
+			"word": "take care of everything",
+			"translation": "overal voor zorgen"
+		},
+		{
+			"word": "live on my own",
+			"translation": "op mezelf wonen"
+		},
+		{
+			"word": "earn money",
+			"translation": "geld verdienen"
+		},
+		{
+			"word": "make choices",
+			"translation": "keuzes maken"
+		},
+		{
+			"word": "pay the bills",
+			"translation": "de rekeningen betalen"
+		}
+	],
+	"sentences": [
+		{
+			"word": "What do you like about being young?",
+			"translation": "Wat vind je leuk aan jong zijn?"
+		},
+		{
+			"word": "It's nice being young because you have a lot of free time.",
+			"translation": "Het is leuk om jong te zijn, omdat je dan veel vrije tijd hebt."
+		},
+		{
+			"word": "What don't you like about being young?",
+			"translation": "Wat vind je niet leuk aan jong zijn?"
+		},
+		{
+			"word": "What is your ideal age?",
+			"translation": "Wat is jouw ideale leeftijd?"
+		},
+		{
+			"word": "My ideal age is 24 years old.",
+			"translation": "Mijn ideale leeftijd is 24."
+		}
+	],
+	"grammar": [
+		{
+			"title": "Can or have to",
+			"rule": "Sommige dingen kun of mag je doen (can), andere moet je doen (have to). Mag niet = can't, hoeft niet = don't have to.",
+			"questions": [
+				{
+					"sentence": "I ___ play outside.",
+					"hint": "Ik mag buitenspelen.",
+					"answer": "can",
+					"options": ["can", "can't", "have to", "don't have to"]
+				},
+				{
+					"sentence": "You ___ eat what you like.",
+					"hint": "Je mag niet eten wat je lekker vindt.",
+					"answer": "can't",
+					"options": ["can", "can't", "have to", "don't have to"]
+				},
+				{
+					"sentence": "I ___ do my homework.",
+					"hint": "Ik moet mijn huiswerk doen.",
+					"answer": "have to",
+					"options": ["can", "can't", "have to", "don't have to"]
+				},
+				{
+					"sentence": "You ___ cook dinner.",
+					"hint": "Je hoeft geen eten te koken.",
+					"answer": "don't have to",
+					"options": ["can", "can't", "have to", "don't have to"]
+				}
+			]
+		}
+	]
+}
